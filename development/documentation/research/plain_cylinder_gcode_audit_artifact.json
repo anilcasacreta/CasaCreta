@@ -1,0 +1,145 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Plain Cylinder G-code Slicing Audit",
+    "description": "Technical audit separating G-code validity from slicing correctness for a clay-printer spiral cylinder.",
+    "generatedAt": "2026-08-20T16:00:00+05:30",
+    "sources": [
+      {
+        "id": "gcode_file",
+        "label": "Plain_Cylinder_[ End ].gcode",
+        "path": "Plain_Cylinder_[ End ].gcode",
+        "query": {
+          "engine": "SQLite",
+          "language": "SQL",
+          "description": "Reads the reviewed layer_summary snapshot produced by the complete G-code parse.",
+          "sql": "SELECT * FROM layer_summary ORDER BY sort_order;",
+          "tables_used": ["layer_summary"],
+          "filters": [
+            "All 95,377 G-code lines parsed",
+            "Temperature commands excluded for the clay-printer audit",
+            "Steady-section averages cover layers 5 through 608"
+          ],
+          "metric_definitions": [
+            "Extrusion total is the sum of positive absolute-E increments after G92 reset handling.",
+            "Path length is summed XY distance for positive-extrusion moves.",
+            "Speed converts G-code F from mm/min to mm/s."
+          ]
+        }
+      }
+    ],
+    "charts": [
+      {
+        "id": "layer_extrusion_chart",
+        "title": "Extrusion totals across slice regions",
+        "subtitle": "The first four layers alternate by about 19%; the steady vase wall remains near 485 E-units per revolution.",
+        "showDescription": true,
+        "type": "bar",
+        "dataset": "layer_summary",
+        "sourceId": "gcode_file",
+        "encodings": {
+          "x": { "field": "region", "type": "nominal", "label": "Layer or region" },
+          "y": { "field": "extrusion_total", "type": "quantitative", "label": "Extrusion total", "format": "number", "unit": "E-units" },
+          "tooltip": [
+            { "field": "region", "type": "nominal", "label": "Layer or region" },
+            { "field": "extrusion_total", "type": "quantitative", "label": "Extrusion", "format": "number", "unit": "E-units" },
+            { "field": "path_type", "type": "text", "label": "Toolpath structure" },
+            { "field": "speed_mm_s", "type": "quantitative", "label": "Speed", "format": "number", "unit": "mm/s" }
+          ]
+        },
+        "xAxisTitle": "Layer or slice region",
+        "yAxisTitle": "Positive extrusion (E-units)",
+        "valueFormat": "number",
+        "unit": "E-units",
+        "layout": "full",
+        "maxRows": 8
+      }
+    ],
+    "tables": [],
+    "blocks": [
+      {
+        "id": "report_title",
+        "type": "markdown",
+        "body": "# Plain Cylinder G-code Slicing Audit"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## Technical summary\n\n**The engineer can be correct even though the G-code is valid.** The file has no broken commands, missing layers, accidental Z drops, coordinate violations, or unstable main-wall flow. However, the first four sliced layers alternate between substantially different WALL, SKIN, and WALL-INNER toolpaths. Layers 1 and 3 deposit about **19.2% less commanded extrusion** than layers 0 and 2. This is the strongest evidence of a slicing/profile problem.\n\nThe likely cause is the interaction between Cura spiralize mode and unusually different feature settings: outer-wall flow **250%**, inner-wall flow **60%**, skin flow **100%**, outer-wall width **8 mm**, and inner/skin widths around **10 mm**. Cura changes feature classification between consecutive base layers, so the commanded clay volume alternates even though the geometry remains the same."
+      },
+      {
+        "id": "base_comparison_intro",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## The suspected fault is concentrated at the base\n\nLayers 0 and 2 contain an outer wall plus approximately 4,925 mm of SKIN paths and command about 1,955 E-units. Layers 1 and 3 replace much of that structure with WALL-INNER paths using the much lower inner-wall flow, reducing the commanded total to about 1,578 E-units. The chart shows this alternating deposition pattern and the transition into the steady vase wall."
+      },
+      {
+        "id": "layer_extrusion_chart_block",
+        "type": "chart",
+        "chartId": "layer_extrusion_chart",
+        "layout": "full"
+      },
+      {
+        "id": "base_detail",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## Consecutive base layers use different feature rules\n\nThe cylinder dimensions remain constant, so the alternating extrusion is not explained by a changing diameter. It comes from Cura labeling and processing the concentric base paths differently on alternating layers. On clay, that can cause alternating pressure, bead thickness, base bulging, or weak interfaces."
+      },
+      {
+        "id": "main_wall_finding",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## The main cylinder wall is consistent\n\nFrom layers 5 through 608, every revolution stays within **258.69–258.70 mm** width, **812.56–812.69 mm** extruding path length, and **484.96–485.04 E-units**. The center remains fixed at X250.00, Y345.74 and speed remains **17 mm/s**. These tight ranges are why the file passes a motion-flow integrity check. The issue is localized slicing behavior, not corruption throughout the cylinder."
+      },
+      {
+        "id": "end_layer_finding",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## The final layer is intentionally different but should be previewed\n\nLayer 609 slows to **9.79 mm/s**, subdivides the path into many small moves, reaches Z916.5, and then tapers extrusion to zero. This matches Cura's enabled `smooth_spiralized_contours` behavior. It is structurally valid, but it may create a visibly tapered top edge; disable or adjust smooth spiral termination if that finish is not wanted."
+      },
+      {
+        "id": "scope_method",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## What was checked\n\nThe complete 95,377-line file was parsed for: 610 sequential layer markers; commanded Z and 1.5 mm layer progression; XY bounds and center; positive extrusion after every G92 reset; per-layer path length and extrusion; inherited feed rates; travel and retraction behavior; Cura feature labels; and embedded slicing settings. Temperatures were intentionally excluded from the verdict because this is a clay printer."
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## What this audit cannot prove\n\nThe audit proves what Cura commanded; it cannot confirm the original STL matches the intended CAD shape, that Cura Preview visually matches the intended base, or that the physical pump delivers clay linearly with E commands. The engineer's exact diagnosis should be compared with the original STL and Cura layer preview, especially layers 0–4."
+      },
+      {
+        "id": "recommendations",
+        "type": "markdown",
+        "sourceId": "gcode_file",
+        "body": "## Recommended correction\n\n1. Re-slice and inspect layers 0–4 in Cura Preview by feature type and flow.\n2. Make outer-wall, inner-wall, and skin flow/line-width settings closer to each other for the base, or use a dedicated consistent base profile.\n3. Confirm whether SKIN and WALL-INNER paths are actually wanted in a plain spiral cylinder.\n4. Compare the new per-layer extrusion totals; consecutive base layers should not alternate by roughly 19% unless that behavior is intentional.\n5. Keep the steady vase-wall section unchanged because its geometry, speed, and extrusion are highly consistent."
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further question\n\nTo identify the exact slicer setting responsible rather than the most likely cause, compare this G-code with the original STL and a Cura Preview screenshot of layers 0–4."
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-20T16:00:00+05:30",
+    "status": "ready",
+    "datasets": {
+      "layer_summary": [
+        { "order": 0, "region": "Layer 0", "path_type": "WALL-OUTER + SKIN", "extrusion_total": 1954.67, "path_mm": 5737.5, "print_moves": 2066, "speed_mm_s": 11.25 },
+        { "order": 1, "region": "Layer 1", "path_type": "WALL-OUTER + WALL-INNER + SKIN", "extrusion_total": 1578.46, "path_mm": 5737.6, "print_moves": 2747, "speed_mm_s": 8.96 },
+        { "order": 2, "region": "Layer 2", "path_type": "WALL-OUTER + SKIN", "extrusion_total": 1954.66, "path_mm": 5737.5, "print_moves": 2065, "speed_mm_s": 11.25 },
+        { "order": 3, "region": "Layer 3", "path_type": "WALL-OUTER + WALL-INNER + SKIN", "extrusion_total": 1578.47, "path_mm": 5737.6, "print_moves": 2747, "speed_mm_s": 8.96 },
+        { "order": 4, "region": "Layer 4 transition", "path_type": "Two WALL-OUTER revolutions", "extrusion_total": 970.01, "path_mm": 1625.3, "print_moves": 256, "speed_mm_s": 17.0 },
+        { "order": 5, "region": "Layers 5–608 average", "path_type": "One spiral WALL-OUTER revolution", "extrusion_total": 485.01, "path_mm": 812.63, "print_moves": 133, "speed_mm_s": 17.0 },
+        { "order": 6, "region": "Layer 609 finish", "path_type": "Spiral finish and extrusion taper", "extrusion_total": 701.18, "path_mm": 1415.78, "print_moves": 1053, "speed_mm_s": 9.79 }
+      ]
+    },
+    "accessIssues": []
+  },
+  "sources": []
+}

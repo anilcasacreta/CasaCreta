@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 2970 2100" role="img" aria-labelledby="title desc">
+  <title id="title">G-Code Inside Grasshopper Flow</title>
+  <desc id="desc">A4 landscape flowchart showing the direct Grasshopper method for generating 3D printer G-code from geometry, points, Concatenate text lines, start and end protocol, and final .gcode export.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #fbfdff; }
+      .page { fill: #ffffff; stroke: #dbe4ef; stroke-width: 2; rx: 18; }
+      .title { font: 800 52px Arial, sans-serif; fill: #0f172a; letter-spacing: 0; }
+      .subtitle { font: 400 22px Arial, sans-serif; fill: #475569; }
+      .warn { font: 700 18px Arial, sans-serif; fill: #9a3412; }
+      .label { font: 800 17px Arial, sans-serif; fill: #334155; }
+      .box { stroke-width: 2.2; rx: 10; filter: url(#shadow); }
+      .titleBox { font: 800 21px Arial, sans-serif; fill: #102033; }
+      .text { font: 400 15px Arial, sans-serif; fill: #334155; }
+      .tag { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.2; rx: 7; }
+      .tagText { font: 700 13px Arial, sans-serif; fill: #475569; }
+      .setup { fill: #e0f2fe; stroke: #0284c7; }
+      .geom { fill: #ecfdf5; stroke: #059669; }
+      .points { fill: #fef9c3; stroke: #ca8a04; }
+      .code { fill: #f5f3ff; stroke: #7c3aed; }
+      .file { fill: #eef2ff; stroke: #4f46e5; }
+      .check { fill: #fff7ed; stroke: #ea580c; }
+      .flow { stroke: #0f766e; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .soft { stroke: #64748b; stroke-width: 2.4; fill: none; marker-end: url(#softArrow); }
+      .note { stroke: #dc2626; stroke-width: 2.5; fill: none; stroke-dasharray: 9 7; marker-end: url(#warnArrow); }
+    </style>
+
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#64748b" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+      <path d="M0,0 L14,5 L0,10 Z" fill="#0f766e"/>
+    </marker>
+    <marker id="softArrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto">
+      <path d="M0,0 L12,4.5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <marker id="warnArrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto">
+      <path d="M0,0 L12,4.5 L0,9 Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2970" height="2100"/>
+  <rect class="page" x="36" y="36" width="2898" height="2028"/>
+
+  <text class="title" x="90" y="112">G-Code Inside Grasshopper</text>
+  <text class="subtitle" x="90" y="150">Direct tutorial workflow: design the printer path, turn ordered points into G-code text, add printer protocols, export .gcode.</text>
+  <text class="warn" x="90" y="186">Keep it simple: the core compiler is Grasshopper text concatenation, not a slicer, plugin, or large architecture.</text>
+
+  <text class="label" x="90" y="245">A. Setup and Printer Assumptions</text>
+  <text class="label" x="90" y="705">B. Geometry to Ordered Printer Points</text>
+  <text class="label" x="90" y="1165">C. Points to G-code Text</text>
+  <text class="label" x="90" y="1625">D. File Export and Printer Test</text>
+
+  <!-- Row A -->
+  <rect class="box setup" x="90" y="270" width="520" height="350"/>
+  <text class="titleBox" x="118" y="305">1. Set Units + Machine Context</text>
+  <text class="text" x="118" y="340">Work in Rhino millimeters.</text>
+  <text class="text" x="118" y="365">Target extrusion/FDM-style printer.</text>
+  <text class="text" x="118" y="390">Firmware receives coordinates as text.</text>
+  <text class="text" x="118" y="415">Firmware handles machine kinematics.</text>
+  <rect class="tag" x="118" y="545" width="355" height="38"/>
+  <text class="tagText" x="135" y="570">Avoid unit-scale mistakes</text>
+
+  <rect class="box setup" x="660" y="270" width="520" height="350"/>
+  <text class="titleBox" x="688" y="305">2. Copy Start Protocol</text>
+  <text class="text" x="688" y="340">Use known working G-code for printer.</text>
+  <text class="text" x="688" y="365">Usually includes homing and heating.</text>
+  <text class="text" x="688" y="390">May include `G28`, units, fan, modes.</text>
+  <text class="text" x="688" y="415">Check `M82` or `M83` extrusion mode.</text>
+  <rect class="tag" x="688" y="545" width="350" height="38"/>
+  <text class="tagText" x="705" y="570">Put into a Grasshopper Panel</text>
+
+  <rect class="box setup" x="1230" y="270" width="520" height="350"/>
+  <text class="titleBox" x="1258" y="305">3. Copy End Protocol</text>
+  <text class="text" x="1258" y="340">Use the same printer's known file.</text>
+  <text class="text" x="1258" y="365">Turns off heaters/fans if needed.</text>
+  <text class="text" x="1258" y="390">Parks, homes, lowers bed, disables motors.</text>
+  <text class="text" x="1258" y="415">This is printer-specific.</text>
+  <rect class="tag" x="1258" y="545" width="350" height="38"/>
+  <text class="tagText" x="1275" y="570">Put into a Grasshopper Panel</text>
+
+  <rect class="box geom" x="1800" y="270" width="520" height="350"/>
+  <text class="titleBox" x="1828" y="305">4. Create Geometry</text>
+  <text class="text" x="1828" y="340">Tutorial example: cylinder.</text>
+  <text class="text" x="1828" y="365">Other inputs: Brep, mesh, curves, points.</text>
+  <text class="text" x="1828" y="390">For non-planar work, use surface paths.</text>
+  <text class="text" x="1828" y="415">You design the exact nozzle path.</text>
+  <rect class="tag" x="1828" y="545" width="350" height="38"/>
+  <text class="tagText" x="1845" y="570">No automatic slicer decisions</text>
+
+  <rect class="box geom" x="2370" y="270" width="520" height="350"/>
+  <text class="titleBox" x="2398" y="305">5. Create Printable Curves</text>
+  <text class="text" x="2398" y="340">Brep/surface -> Contour or isocurves.</text>
+  <text class="text" x="2398" y="365">Mesh -> polylines or path curves.</text>
+  <text class="text" x="2398" y="390">Curves -> divide directly into points.</text>
+  <text class="text" x="2398" y="415">Contour distance becomes layer height.</text>
+  <rect class="tag" x="2398" y="545" width="370" height="38"/>
+  <text class="tagText" x="2415" y="570">Layer height = path spacing</text>
+
+  <!-- Row B -->
+  <rect class="box points" x="90" y="730" width="520" height="350"/>
+  <text class="titleBox" x="118" y="765">6. Divide Curves Into Points</text>
+  <text class="text" x="118" y="800">Use `Divide Curve` on contour/path curves.</text>
+  <text class="text" x="118" y="825">More points give smoother path resolution.</text>
+  <text class="text" x="118" y="850">Each contour becomes a data branch.</text>
+  <text class="text" x="118" y="875">Points are still not G-code.</text>
+  <rect class="tag" x="118" y="1005" width="330" height="38"/>
+  <text class="tagText" x="135" y="1030">Output: point DataTree</text>
+
+  <rect class="box points" x="660" y="730" width="520" height="350"/>
+  <text class="titleBox" x="688" y="765">7. Flatten / Order Points</text>
+  <text class="text" x="688" y="800">Flatten Tree converts branches to one list.</text>
+  <text class="text" x="688" y="825">Point locations do not change.</text>
+  <text class="text" x="688" y="850">Only the list structure changes.</text>
+  <text class="text" x="688" y="875">Order defines the printer movement path.</text>
+  <rect class="tag" x="688" y="1005" width="360" height="38"/>
+  <text class="tagText" x="705" y="1030">Continuous route if ordered well</text>
+
+  <rect class="box points" x="1230" y="730" width="520" height="350"/>
+  <text class="titleBox" x="1258" y="765">8. Preview As Polyline</text>
+  <text class="text" x="1258" y="800">Connect ordered points to `Polyline`.</text>
+  <text class="text" x="1258" y="825">This previews the real nozzle path.</text>
+  <text class="text" x="1258" y="850">Check jumps between contours/layers.</text>
+  <text class="text" x="1258" y="875">Design travel paths if needed.</text>
+  <rect class="tag" x="1258" y="1005" width="330" height="38"/>
+  <text class="tagText" x="1275" y="1030">Visual path check</text>
+
+  <rect class="box points" x="1800" y="730" width="520" height="350"/>
+  <text class="titleBox" x="1828" y="765">9. Deconstruct Points</text>
+  <text class="text" x="1828" y="800">Use `Deconstruct Point`.</text>
+  <text class="text" x="1828" y="825">Separate point data into coordinate lists.</text>
+  <text class="text" x="1828" y="850">Outputs: X list, Y list, Z list.</text>
+  <text class="text" x="1828" y="875">These numbers feed text construction.</text>
+  <rect class="tag" x="1828" y="1005" width="320" height="38"/>
+  <text class="tagText" x="1845" y="1030">X / Y / Z streams</text>
+
+  <rect class="box code" x="2370" y="730" width="520" height="350"/>
+  <text class="titleBox" x="2398" y="765">10. Calculate E + F</text>
+  <text class="text" x="2398" y="800">`F` = feedrate, e.g. `F1800`.</text>
+  <text class="text" x="2398" y="825">`E` = extrusion amount.</text>
+  <text class="text" x="2398" y="850">Base E on segment length calibration.</text>
+  <text class="text" x="2398" y="875">Use relative E or cumulative E per printer.</text>
+  <rect class="tag" x="2398" y="1005" width="410" height="38"/>
+  <text class="tagText" x="2415" y="1030">M82 absolute / M83 relative</text>
+
+  <!-- Row C -->
+  <rect class="box code" x="90" y="1190" width="520" height="350"/>
+  <text class="titleBox" x="118" y="1225">11. Concatenate G1 Lines</text>
+  <text class="text" x="118" y="1260">Grasshopper: Sets -> Text -> Concatenate.</text>
+  <text class="text" x="118" y="1285">Join command fragments and coordinates.</text>
+  <text class="text" x="118" y="1310">Pattern: `G1 F... X... Y... Z... E...`</text>
+  <text class="text" x="118" y="1335">Spaces between fragments are essential.</text>
+  <rect class="tag" x="118" y="1465" width="365" height="38"/>
+  <text class="tagText" x="135" y="1490">This is the core compiler</text>
+
+  <rect class="box code" x="660" y="1190" width="520" height="350"/>
+  <text class="titleBox" x="688" y="1225">12. Add Travel Moves</text>
+  <text class="text" x="688" y="1260">Deposition move includes `E`.</text>
+  <text class="text" x="688" y="1285">Travel move omits `E`.</text>
+  <text class="text" x="688" y="1310">Use travel for jumps between islands.</text>
+  <text class="text" x="688" y="1335">Supports, infill, brim must be designed.</text>
+  <rect class="tag" x="688" y="1465" width="360" height="38"/>
+  <text class="tagText" x="705" y="1490">No slicer creates these for you</text>
+
+  <rect class="box code" x="1230" y="1190" width="520" height="350"/>
+  <text class="titleBox" x="1258" y="1225">13. Assemble Full File Text</text>
+  <text class="text" x="1258" y="1260">Combine three blocks:</text>
+  <text class="text" x="1258" y="1285">1. start protocol panel</text>
+  <text class="text" x="1258" y="1310">2. core G1 lines from Concatenate</text>
+  <text class="text" x="1258" y="1335">3. end protocol panel</text>
+  <rect class="tag" x="1258" y="1465" width="365" height="38"/>
+  <text class="tagText" x="1275" y="1490">Final Grasshopper Panel</text>
+
+  <rect class="box file" x="1800" y="1190" width="520" height="350"/>
+  <text class="titleBox" x="1828" y="1225">14. Export .gcode</text>
+  <text class="text" x="1828" y="1260">Right-click final Panel.</text>
+  <text class="text" x="1828" y="1285">Choose `Copy Data Only`.</text>
+  <text class="text" x="1828" y="1310">Paste into Notepad.</text>
+  <text class="text" x="1828" y="1335">Save as all files with `.gcode` extension.</text>
+  <rect class="tag" x="1828" y="1465" width="330" height="38"/>
+  <text class="tagText" x="1845" y="1490">Example: trial.gcode</text>
+
+  <rect class="box check" x="2370" y="1190" width="520" height="350"/>
+  <text class="titleBox" x="2398" y="1225">15. Test Carefully</text>
+  <text class="text" x="2398" y="1260">Use safe height and slow first test.</text>
+  <text class="text" x="2398" y="1285">Verify units, temperatures, E mode.</text>
+  <text class="text" x="2398" y="1310">Watch first print physically.</text>
+  <text class="text" x="2398" y="1335">Wrong E or Z can damage the machine.</text>
+  <rect class="tag" x="2398" y="1465" width="350" height="38"/>
+  <text class="tagText" x="2415" y="1490">Printer-specific risk check</text>
+
+  <!-- Row D notes -->
+  <rect class="box geom" x="90" y="1650" width="900" height="260"/>
+  <text class="titleBox" x="118" y="1685">Optional Non-Planar Method From Tutorial</text>
+  <text class="text" x="118" y="1722">Rebuild ellipse as degree 3 curve, edit control points, loft surface.</text>
+  <text class="text" x="118" y="1747">Extract isocurves from the surface, convert curves to points.</text>
+  <text class="text" x="118" y="1772">Then reuse the same point -> coordinate -> Concatenate -> G-code pipeline.</text>
+  <rect class="tag" x="118" y="1845" width="435" height="38"/>
+  <text class="tagText" x="135" y="1870">Slicers usually cannot do this path directly</text>
+
+  <rect class="box check" x="1035" y="1650" width="900" height="260"/>
+  <text class="titleBox" x="1063" y="1685">Manual Responsibilities</text>
+  <text class="text" x="1063" y="1722">Layer height is contour/path spacing. Infill is designed by you.</text>
+  <text class="text" x="1063" y="1747">Build plate contact, supports, and travel moves are also designed by you.</text>
+  <text class="text" x="1063" y="1772">This is harder than slicing, but gives control over every movement.</text>
+  <rect class="tag" x="1063" y="1845" width="395" height="38"/>
+  <text class="tagText" x="1080" y="1870">Power = direct toolpath control</text>
+
+  <rect class="box file" x="1980" y="1650" width="900" height="260"/>
+  <text class="titleBox" x="2008" y="1685">Minimal G-code Shape</text>
+  <text class="text" x="2008" y="1722">Start protocol: prepare printer and modes.</text>
+  <text class="text" x="2008" y="1747">Core: many `G1 F... X... Y... Z... E...` lines.</text>
+  <text class="text" x="2008" y="1772">End protocol: stop, cool, park, disable or finish.</text>
+  <rect class="tag" x="2008" y="1845" width="395" height="38"/>
+  <text class="tagText" x="2025" y="1870">Grasshopper writes text; firmware moves</text>
+
+  <!-- Arrows -->
+  <path class="flow" d="M610 445 H660"/>
+  <path class="flow" d="M1180 445 H1230"/>
+  <path class="flow" d="M1750 445 H1800"/>
+  <path class="flow" d="M2320 445 H2370"/>
+  <path class="flow" d="M2630 620 V675 C2630 700 350 700 350 730"/>
+  <path class="flow" d="M610 905 H660"/>
+  <path class="flow" d="M1180 905 H1230"/>
+  <path class="flow" d="M1750 905 H1800"/>
+  <path class="flow" d="M2320 905 H2370"/>
+  <path class="flow" d="M2630 1080 V1135 C2630 1160 350 1160 350 1190"/>
+  <path class="flow" d="M610 1365 H660"/>
+  <path class="flow" d="M1180 1365 H1230"/>
+  <path class="flow" d="M1750 1365 H1800"/>
+  <path class="flow" d="M2320 1365 H2370"/>
+
+  <path class="soft" d="M920 620 V730"/>
+  <path class="soft" d="M1490 620 V1190"/>
+  <path class="soft" d="M920 1080 V1190"/>
+  <path class="note" d="M2630 1190 C2740 1060 2740 680 920 620"/>
+  <path class="note" d="M1490 1540 C1490 1608 350 1608 350 1650"/>
+
+  <text class="warn" x="90" y="2025">Print note: use A4 landscape and fit-to-page. First printer test should be slow, watched, and based on known working start/end G-code.</text>
+</svg>

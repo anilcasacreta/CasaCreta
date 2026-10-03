@@ -1,0 +1,353 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3600" height="2200" viewBox="0 0 3600 2200" role="img" aria-labelledby="title desc">
+  <title id="title">Grasshopper G_Code Generation</title>
+  <desc id="desc">Dark mode continuous flow architecture diagram for Grasshopper G_Code Generation, showing detailed connected stages from Rhino and Grasshopper inputs through geometry extraction, reconstruction, topology, toolpath graph, validation, clay and SCARA models, motion scheduling, firmware postprocessing, preview, and G-code export.</desc>
+
+  <defs>
+    <style>
+      .bg { fill: #0b1020; }
+      .grid { stroke: #17213a; stroke-width: 1; opacity: 0.65; }
+      .title { font: 800 56px Arial, sans-serif; fill: #f4f7fb; letter-spacing: 0; }
+      .subtitle { font: 400 22px Arial, sans-serif; fill: #aab8ca; }
+      .note { font: 700 18px Arial, sans-serif; fill: #ffd166; }
+      .laneLabel { font: 700 18px Arial, sans-serif; fill: #7f91aa; }
+      .box { stroke-width: 2.2; rx: 16; filter: url(#shadow); }
+      .boxTitle { font: 800 21px Arial, sans-serif; fill: #ffffff; }
+      .section { font: 700 13px Arial, sans-serif; fill: #d7e3f4; }
+      .text { font: 400 12.5px Arial, sans-serif; fill: #b7c6d9; }
+      .tiny { font: 400 11.5px Arial, sans-serif; fill: #93a4ba; }
+      .artifact { fill: #101a2f; stroke: #394b67; stroke-width: 1.4; rx: 8; }
+      .artifactText { font: 700 12px Arial, sans-serif; fill: #dbe7f6; }
+      .input { fill: #10233d; stroke: #3fa7ff; }
+      .extract { fill: #102d2a; stroke: #32d583; }
+      .topology { fill: #302512; stroke: #f6b84b; }
+      .toolpath { fill: #0f2a36; stroke: #2dd4bf; }
+      .graph { fill: #2d2410; stroke: #f59e0b; }
+      .constraint { fill: #341b22; stroke: #fb7185; }
+      .clay { fill: #352112; stroke: #fb923c; }
+      .scara { fill: #142d23; stroke: #34d399; }
+      .motion { fill: #201b3d; stroke: #a78bfa; }
+      .firmware { fill: #172337; stroke: #94a3b8; }
+      .preview { fill: #1f2c17; stroke: #a3e635; }
+      .export { fill: #13243a; stroke: #60a5fa; }
+      .arrow { stroke: #c9d6e8; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .flow { stroke: #67e8f9; stroke-width: 4; fill: none; marker-end: url(#flowArrow); }
+      .minor { stroke: #7e8fa8; stroke-width: 2; fill: none; marker-end: url(#minorArrow); }
+      .feedback { stroke: #fb7185; stroke-width: 2.8; fill: none; stroke-dasharray: 11 8; marker-end: url(#feedbackArrow); }
+      .meta { stroke: #fbbf24; stroke-width: 2.3; fill: none; stroke-dasharray: 7 7; marker-end: url(#metaArrow); }
+      .bus { stroke: #4b5f7a; stroke-width: 2; fill: none; stroke-dasharray: 4 8; }
+    </style>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000000" flood-opacity="0.38"/>
+    </filter>
+
+    <marker id="arrow" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+      <path d="M0,0 L14,5 L0,10 Z" fill="#c9d6e8"/>
+    </marker>
+    <marker id="flowArrow" markerWidth="16" markerHeight="12" refX="14" refY="6" orient="auto">
+      <path d="M0,0 L16,6 L0,12 Z" fill="#67e8f9"/>
+    </marker>
+    <marker id="minorArrow" markerWidth="11" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L11,4 L0,8 Z" fill="#7e8fa8"/>
+    </marker>
+    <marker id="feedbackArrow" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+      <path d="M0,0 L14,5 L0,10 Z" fill="#fb7185"/>
+    </marker>
+    <marker id="metaArrow" markerWidth="13" markerHeight="9" refX="11" refY="4.5" orient="auto">
+      <path d="M0,0 L13,4.5 L0,9 Z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="3600" height="2200"/>
+
+  <g opacity="0.55">
+    <path class="grid" d="M0 200 H3600 M0 400 H3600 M0 600 H3600 M0 800 H3600 M0 1000 H3600 M0 1200 H3600 M0 1400 H3600 M0 1600 H3600 M0 1800 H3600 M0 2000 H3600"/>
+    <path class="grid" d="M200 0 V2200 M400 0 V2200 M600 0 V2200 M800 0 V2200 M1000 0 V2200 M1200 0 V2200 M1400 0 V2200 M1600 0 V2200 M1800 0 V2200 M2000 0 V2200 M2200 0 V2200 M2400 0 V2200 M2600 0 V2200 M2800 0 V2200 M3000 0 V2200 M3200 0 V2200 M3400 0 V2200"/>
+  </g>
+
+  <text class="title" x="90" y="78">Grasshopper G_Code Generation</text>
+  <text class="subtitle" x="90" y="116">Continuous dark-mode manufacturing flow: Rhino/GH geometry becomes validated, clay-aware, SCARA-aware machine motion before G-code is emitted.</text>
+  <text class="note" x="90" y="154">Rule: do not discover manufacturability in G-code. Validate geometry, process, motion, and machine constraints first.</text>
+
+  <text class="laneLabel" x="90" y="240">Source and Geometry Interpretation</text>
+  <text class="laneLabel" x="90" y="850">Manufacturing Intelligence and Validation</text>
+  <text class="laneLabel" x="90" y="1470">Motion, Firmware, Preview, Export</text>
+
+  <rect class="box input" x="90" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="120" y="315">1. Rhino / GH Inputs</text>
+  <text class="section" x="120" y="350">Geometry sources</text>
+  <text class="text" x="120" y="377">Rhino curves, arcs, NURBS, polycurves</text>
+  <text class="text" x="120" y="399">Surfaces, Breps, meshes, contours</text>
+  <text class="text" x="120" y="421">Grasshopper DataTrees and parameters</text>
+  <text class="text" x="120" y="443">Fields, particles, voxels, point clouds</text>
+  <text class="section" x="120" y="480">Primary records</text>
+  <rect class="artifact" x="120" y="498" width="110" height="32"/><text class="artifactText" x="132" y="519">GeometrySource</text>
+  <rect class="artifact" x="240" y="498" width="118" height="32"/><text class="artifactText" x="252" y="519">SourceReference</text>
+
+  <rect class="box extract" x="470" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="500" y="315">2. Input Adapters</text>
+  <text class="section" x="500" y="350">Normalize without losing intent</text>
+  <text class="text" x="500" y="377">Curve adapter</text>
+  <text class="text" x="500" y="399">Curve network adapter</text>
+  <text class="text" x="500" y="421">Surface / Brep adapter</text>
+  <text class="text" x="500" y="443">Mesh slicing adapter</text>
+  <text class="text" x="500" y="465">Procedural field adapter</text>
+  <text class="text" x="500" y="487">Point cloud / voxel adapter</text>
+  <rect class="artifact" x="500" y="510" width="112" height="32"/><text class="artifactText" x="512" y="531">InputBundle</text>
+  <rect class="artifact" x="622" y="510" width="112" height="32"/><text class="artifactText" x="634" y="531">Metadata</text>
+
+  <rect class="box extract" x="850" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="880" y="315">3. Canonicalization</text>
+  <text class="section" x="880" y="350">Geometry classification</text>
+  <text class="text" x="880" y="377">Line / arc / polyline / NURBS detection</text>
+  <text class="text" x="880" y="399">Continuity split at G0, G1, G2 breaks</text>
+  <text class="text" x="880" y="421">Planar, non-planar, surface-bound tags</text>
+  <text class="text" x="880" y="443">User attribute and layer mapping</text>
+  <text class="section" x="880" y="480">Records</text>
+  <rect class="artifact" x="880" y="498" width="116" height="32"/><text class="artifactText" x="892" y="519">CanonicalPath</text>
+  <rect class="artifact" x="1006" y="498" width="112" height="32"/><text class="artifactText" x="1018" y="519">PathIntent</text>
+
+  <rect class="box extract" x="1230" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="1260" y="315">4. Sampling + Fitting</text>
+  <text class="section" x="1260" y="350">Bounded geometric error</text>
+  <text class="text" x="1260" y="377">Fixed length sampling</text>
+  <text class="text" x="1260" y="399">Chord-tolerance adaptive sampling</text>
+  <text class="text" x="1260" y="421">Curvature-aware densification</text>
+  <text class="text" x="1260" y="443">Arc fitting where firmware supports it</text>
+  <text class="text" x="1260" y="465">NURBS preserved until motion conversion</text>
+  <rect class="artifact" x="1260" y="498" width="124" height="32"/><text class="artifactText" x="1272" y="519">SamplingPolicy</text>
+  <rect class="artifact" x="1394" y="498" width="100" height="32"/><text class="artifactText" x="1406" y="519">ErrorBound</text>
+
+  <rect class="box extract" x="1610" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="1640" y="315">5. Reconstruction</text>
+  <text class="section" x="1640" y="350">For procedural or noisy inputs</text>
+  <text class="text" x="1640" y="377">Polyline reconstruction and streamline tracing</text>
+  <text class="text" x="1640" y="399">MST / Steiner / Delaunay / Voronoi</text>
+  <text class="text" x="1640" y="421">Alpha shapes and contour reconstruction</text>
+  <text class="text" x="1640" y="443">Medial axis and skeletonization</text>
+  <text class="text" x="1640" y="465">Confidence score for uncertain paths</text>
+  <rect class="artifact" x="1640" y="498" width="122" height="32"/><text class="artifactText" x="1652" y="519">PathCandidate</text>
+  <rect class="artifact" x="1772" y="498" width="102" height="32"/><text class="artifactText" x="1784" y="519">Confidence</text>
+
+  <rect class="box topology" x="1990" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="2020" y="315">6. Topology Engine</text>
+  <text class="section" x="2020" y="350">Manufacturing structure</text>
+  <text class="text" x="2020" y="377">Endpoint clustering</text>
+  <text class="text" x="2020" y="399">Curve intersection splitting</text>
+  <text class="text" x="2020" y="421">Connectivity and adjacency</text>
+  <text class="text" x="2020" y="443">Containment trees and nested loops</text>
+  <text class="text" x="2020" y="465">Island, boundary, loop classification</text>
+  <rect class="artifact" x="2020" y="498" width="118" height="32"/><text class="artifactText" x="2032" y="519">TopologyMap</text>
+  <rect class="artifact" x="2148" y="498" width="112" height="32"/><text class="artifactText" x="2160" y="519">IslandSet</text>
+
+  <rect class="box topology" x="2370" y="275" width="300" height="300"/>
+  <text class="boxTitle" x="2400" y="315">7. Region + Surface Ops</text>
+  <text class="section" x="2400" y="350">Planar and non-planar adapters</text>
+  <text class="text" x="2400" y="377">Offsets, thin walls, gap filling</text>
+  <text class="text" x="2400" y="399">Zigzag, grid, concentric, Voronoi infill</text>
+  <text class="text" x="2400" y="421">UV paths, isocurves, spirals, geodesics</text>
+  <text class="text" x="2400" y="443">Texture and field-driven surface paths</text>
+  <text class="text" x="2400" y="465">Brep face-network traversal</text>
+  <rect class="artifact" x="2400" y="498" width="114" height="32"/><text class="artifactText" x="2412" y="519">RegionPlan</text>
+  <rect class="artifact" x="2524" y="498" width="112" height="32"/><text class="artifactText" x="2536" y="519">SurfacePath</text>
+
+  <path class="flow" d="M390 425 H470"/>
+  <path class="flow" d="M770 425 H850"/>
+  <path class="flow" d="M1150 425 H1230"/>
+  <path class="flow" d="M1530 425 H1610"/>
+  <path class="flow" d="M1910 425 H1990"/>
+  <path class="flow" d="M2290 425 H2370"/>
+  <path class="flow" d="M2670 425 C2870 425 2920 700 2520 760 C2260 800 1900 800 1520 800"/>
+
+  <rect class="box toolpath" x="1230" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="1260" y="920">8. Toolpath Kernel</text>
+  <text class="section" x="1260" y="955">Typed manufacturing intent</text>
+  <text class="text" x="1260" y="982">Toolpath, ToolpathGroup, ToolpathGraph</text>
+  <text class="text" x="1260" y="1004">Line, arc, sampled, surface spans</text>
+  <text class="text" x="1260" y="1026">Travel and extrusion segments</text>
+  <text class="text" x="1260" y="1048">Events: start, stop, dwell, pressure relief</text>
+  <text class="text" x="1260" y="1070">ProcessAttributes and ValidationState</text>
+  <rect class="artifact" x="1260" y="1103" width="116" height="32"/><text class="artifactText" x="1272" y="1124">Toolpath</text>
+  <rect class="artifact" x="1386" y="1103" width="112" height="32"/><text class="artifactText" x="1398" y="1124">Segment</text>
+
+  <rect class="box toolpath" x="1610" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="1640" y="920">9. Routing Intelligence</text>
+  <text class="section" x="1640" y="955">Continuous deposition logic</text>
+  <text class="text" x="1640" y="982">Euler paths for edge coverage</text>
+  <text class="text" x="1640" y="1004">Chinese postman for repeated-edge travel</text>
+  <text class="text" x="1640" y="1026">TSP ordering for disconnected islands</text>
+  <text class="text" x="1640" y="1048">DAG ordering for dependencies</text>
+  <text class="text" x="1640" y="1070">Path stitching and seam reduction</text>
+  <rect class="artifact" x="1640" y="1103" width="112" height="32"/><text class="artifactText" x="1652" y="1124">RoutePlan</text>
+  <rect class="artifact" x="1762" y="1103" width="112" height="32"/><text class="artifactText" x="1774" y="1124">JunctionRule</text>
+
+  <rect class="box graph" x="1990" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="2020" y="920">10. Knowledge Graph</text>
+  <text class="section" x="2020" y="955">Cross-system relationship model</text>
+  <text class="text" x="2020" y="982">Geometry, topology, toolpath entities</text>
+  <text class="text" x="2020" y="1004">Operation, constraint, validation entities</text>
+  <text class="text" x="2020" y="1026">Machine, material, motion entities</text>
+  <text class="text" x="2020" y="1048">Edges: derived-from, depends-on, violates</text>
+  <text class="text" x="2020" y="1070">Decision trace and recompute links</text>
+  <rect class="artifact" x="2020" y="1103" width="150" height="32"/><text class="artifactText" x="2032" y="1124">ManufacturingKG</text>
+  <rect class="artifact" x="2180" y="1103" width="86" height="32"/><text class="artifactText" x="2192" y="1124">Trace</text>
+
+  <rect class="box constraint" x="2370" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="2400" y="920">11. Constraint Engine</text>
+  <text class="section" x="2400" y="955">Manufacturability gates</text>
+  <text class="text" x="2400" y="982">Geometry: tolerance, curvature, closure</text>
+  <text class="text" x="2400" y="1004">Topology: containment, islands, dependencies</text>
+  <text class="text" x="2400" y="1026">Collision: nozzle, tool, printed material</text>
+  <text class="text" x="2400" y="1048">Process: starts, stops, corners, flow</text>
+  <text class="text" x="2400" y="1070">Output: hard errors, warnings, scores</text>
+  <rect class="artifact" x="2400" y="1103" width="132" height="32"/><text class="artifactText" x="2412" y="1124">ValidationReport</text>
+  <rect class="artifact" x="2542" y="1103" width="96" height="32"/><text class="artifactText" x="2554" y="1124">Score</text>
+
+  <rect class="box clay" x="2750" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="2780" y="920">12. Clay Process Model</text>
+  <text class="section" x="2780" y="955">Ceramic extrusion behavior</text>
+  <text class="text" x="2780" y="982">Pressure lag and pressure advance</text>
+  <text class="text" x="2780" y="1004">Bead width, height, overlap, deformation</text>
+  <text class="text" x="2780" y="1026">Corner accumulation and restart defects</text>
+  <text class="text" x="2780" y="1048">Wet-clay collision and smear risk</text>
+  <text class="text" x="2780" y="1070">Drying window and material batch data</text>
+  <rect class="artifact" x="2780" y="1103" width="134" height="32"/><text class="artifactText" x="2792" y="1124">ClayProcessState</text>
+  <rect class="artifact" x="2924" y="1103" width="96" height="32"/><text class="artifactText" x="2936" y="1124">FlowLimit</text>
+
+  <rect class="box scara" x="3130" y="880" width="300" height="300"/>
+  <text class="boxTitle" x="3160" y="920">13. SCARA Validation</text>
+  <text class="section" x="3160" y="955">Machine-specific feasibility</text>
+  <text class="text" x="3160" y="982">Workspace reachability</text>
+  <text class="text" x="3160" y="1004">Joint limits, velocity, acceleration</text>
+  <text class="text" x="3160" y="1026">Singularity proximity</text>
+  <text class="text" x="3160" y="1048">IK branch continuity</text>
+  <text class="text" x="3160" y="1070">Path distortion and nozzle orientation risk</text>
+  <rect class="artifact" x="3160" y="1103" width="120" height="32"/><text class="artifactText" x="3172" y="1124">MachineProfile</text>
+  <rect class="artifact" x="3290" y="1103" width="104" height="32"/><text class="artifactText" x="3302" y="1124">IKResult</text>
+
+  <path class="flow" d="M1530 1030 H1610"/>
+  <path class="flow" d="M1910 1030 H1990"/>
+  <path class="flow" d="M2290 1030 H2370"/>
+  <path class="flow" d="M2670 1030 H2750"/>
+  <path class="flow" d="M3050 1030 H3130"/>
+  <path class="flow" d="M3280 1180 C3280 1320 2900 1370 2520 1440"/>
+
+  <rect class="box motion" x="2370" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="2400" y="1550">14. Motion Kernel</text>
+  <text class="section" x="2400" y="1585">Validated motion schedule</text>
+  <text class="text" x="2400" y="1612">LinearMove, ArcMove, SplineApprox</text>
+  <text class="text" x="2400" y="1634">TravelMove, ExtrusionMove, Dwell</text>
+  <text class="text" x="2400" y="1656">Feedrate and curvature speed control</text>
+  <text class="text" x="2400" y="1678">Acceleration, jerk, corner smoothing</text>
+  <text class="text" x="2400" y="1700">Look-ahead and chord-error control</text>
+  <rect class="artifact" x="2400" y="1733" width="120" height="32"/><text class="artifactText" x="2412" y="1754">MotionProgram</text>
+  <rect class="artifact" x="2530" y="1733" width="110" height="32"/><text class="artifactText" x="2542" y="1754">MachineMove</text>
+
+  <rect class="box motion" x="1990" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="2020" y="1550">15. Extrusion Program</text>
+  <text class="section" x="2020" y="1585">Flow synchronized with motion</text>
+  <text class="text" x="2020" y="1612">Pressure advance commands</text>
+  <text class="text" x="2020" y="1634">Start/stop compensation</text>
+  <text class="text" x="2020" y="1656">Corner flow reduction</text>
+  <text class="text" x="2020" y="1678">Bead target mapping</text>
+  <text class="text" x="2020" y="1700">Material state updates</text>
+  <rect class="artifact" x="2020" y="1733" width="136" height="32"/><text class="artifactText" x="2032" y="1754">ExtrusionProgram</text>
+  <rect class="artifact" x="2166" y="1733" width="88" height="32"/><text class="artifactText" x="2178" y="1754">FlowCmd</text>
+
+  <rect class="box firmware" x="1610" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="1640" y="1550">16. Machine Program</text>
+  <text class="section" x="1640" y="1585">Machine-neutral output</text>
+  <text class="text" x="1640" y="1612">Motion + extrusion + process events</text>
+  <text class="text" x="1640" y="1634">Validation report attached</text>
+  <text class="text" x="1640" y="1656">MachineProfile references</text>
+  <text class="text" x="1640" y="1678">MaterialProfile references</text>
+  <text class="text" x="1640" y="1700">Ready for firmware postprocessor</text>
+  <rect class="artifact" x="1640" y="1733" width="130" height="32"/><text class="artifactText" x="1652" y="1754">MachineProgram</text>
+  <rect class="artifact" x="1780" y="1733" width="94" height="32"/><text class="artifactText" x="1792" y="1754">JobState</text>
+
+  <rect class="box firmware" x="1230" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="1260" y="1550">17. Firmware Post</text>
+  <text class="section" x="1260" y="1585">Dialect serialization</text>
+  <text class="text" x="1260" y="1612">Marlin, RepRapFirmware, Klipper</text>
+  <text class="text" x="1260" y="1634">Absolute/relative extrusion mode</text>
+  <text class="text" x="1260" y="1656">Arc support and feedrate semantics</text>
+  <text class="text" x="1260" y="1678">Start/end templates</text>
+  <text class="text" x="1260" y="1700">Custom controller hooks</text>
+  <rect class="artifact" x="1260" y="1733" width="120" height="32"/><text class="artifactText" x="1272" y="1754">FirmwarePost</text>
+  <rect class="artifact" x="1390" y="1733" width="110" height="32"/><text class="artifactText" x="1402" y="1754">GCodeDialect</text>
+
+  <rect class="box preview" x="850" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="880" y="1550">18. Verification Views</text>
+  <text class="section" x="880" y="1585">Preview before export</text>
+  <text class="text" x="880" y="1612">Source geometry and reconstructed paths</text>
+  <text class="text" x="880" y="1634">Topology and toolpath graph</text>
+  <text class="text" x="880" y="1656">Nozzle envelope and collision view</text>
+  <text class="text" x="880" y="1678">Clay bead and flow overlays</text>
+  <text class="text" x="880" y="1700">SCARA reach/singularity heatmap</text>
+  <rect class="artifact" x="880" y="1733" width="116" height="32"/><text class="artifactText" x="892" y="1754">PreviewScene</text>
+  <rect class="artifact" x="1006" y="1733" width="104" height="32"/><text class="artifactText" x="1018" y="1754">ReportView</text>
+
+  <rect class="box export" x="470" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="500" y="1550">19. Export Bundle</text>
+  <text class="section" x="500" y="1585">Final artifacts</text>
+  <text class="text" x="500" y="1612">Serialized .gcode</text>
+  <text class="text" x="500" y="1634">Validation report</text>
+  <text class="text" x="500" y="1656">Preview snapshots</text>
+  <text class="text" x="500" y="1678">Machine/material profiles used</text>
+  <text class="text" x="500" y="1700">Calibration assumptions</text>
+  <rect class="artifact" x="500" y="1733" width="112" height="32"/><text class="artifactText" x="512" y="1754">GCodeFile</text>
+  <rect class="artifact" x="622" y="1733" width="106" height="32"/><text class="artifactText" x="634" y="1754">JobBundle</text>
+
+  <rect class="box export" x="90" y="1510" width="300" height="300"/>
+  <text class="boxTitle" x="120" y="1550">20. GH Components</text>
+  <text class="section" x="120" y="1585">User-facing component layer</text>
+  <text class="text" x="120" y="1612">CC Curve Toolpath, CC Surface Toolpath</text>
+  <text class="text" x="120" y="1634">CC Build Graph, CC Validate Toolpath</text>
+  <text class="text" x="120" y="1656">CC Clay Profile, CC Machine Profile</text>
+  <text class="text" x="120" y="1678">CC SCARA Validate, CC Motion Schedule</text>
+  <text class="text" x="120" y="1700">CC Postprocess GCode, CC Preview, CC Export</text>
+  <rect class="artifact" x="120" y="1733" width="118" height="32"/><text class="artifactText" x="132" y="1754">GH Output</text>
+  <rect class="artifact" x="248" y="1733" width="104" height="32"/><text class="artifactText" x="260" y="1754">User Edit</text>
+
+  <path class="flow" d="M2370 1660 H2290"/>
+  <path class="flow" d="M1990 1660 H1910"/>
+  <path class="flow" d="M1610 1660 H1530"/>
+  <path class="flow" d="M1230 1660 H1150"/>
+  <path class="flow" d="M850 1660 H770"/>
+  <path class="flow" d="M470 1660 H390"/>
+
+  <path class="bus" d="M240 640 V1440"/>
+  <path class="bus" d="M2140 600 V835"/>
+  <path class="bus" d="M2900 1210 V1440 H2520"/>
+
+  <path class="meta" d="M240 575 C240 715 900 730 1380 880"/>
+  <path class="meta" d="M2140 575 C2140 700 2140 770 2140 880"/>
+  <path class="meta" d="M2140 1180 C2140 1305 2140 1390 2140 1510"/>
+  <path class="meta" d="M2900 1180 C2900 1300 2570 1390 2140 1510"/>
+  <path class="minor" d="M2520 1180 C2520 1340 2520 1410 2520 1510"/>
+  <path class="minor" d="M1760 1180 C1760 1325 1760 1400 1760 1510"/>
+
+  <path class="feedback" d="M2520 1180 C2380 1285 1700 1320 1380 1180"/>
+  <path class="feedback" d="M3280 1180 C3300 1360 2920 1430 2520 1510"/>
+  <path class="feedback" d="M1000 1510 C980 1360 1120 1260 1380 1180"/>
+  <path class="feedback" d="M620 1510 C610 1260 760 940 1000 575"/>
+  <path class="feedback" d="M240 1510 C230 1180 240 880 240 575"/>
+
+  <rect class="artifact" x="90" y="1930" width="1060" height="140"/>
+  <text class="section" x="120" y="1965">Continuous flow meaning</text>
+  <text class="text" x="120" y="1994">The cyan path is the primary manufacturing pipeline. Every stage creates typed artifacts for the next stage.</text>
+  <text class="text" x="120" y="2018">Yellow dashed lines preserve source traceability and relationship metadata through the Manufacturing Knowledge Graph.</text>
+  <text class="text" x="120" y="2042">Red dashed lines mean validation can force recompute, user edits, route changes, or geometry/process changes before export.</text>
+
+  <rect class="artifact" x="1240" y="1930" width="1020" height="140"/>
+  <text class="section" x="1270" y="1965">Core objects</text>
+  <text class="text" x="1270" y="1994">ManufacturingSession contains profiles, source references, canonical paths, topology maps, toolpath graph, knowledge graph,</text>
+  <text class="text" x="1270" y="2018">validation reports, clay process state, machine validation results, motion program, G-code program, and preview scene.</text>
+  <text class="text" x="1270" y="2042">Grasshopper remains the UI layer. The engine owns the durable manufacturing model.</text>
+
+  <rect class="artifact" x="2350" y="1930" width="980" height="140"/>
+  <text class="section" x="2380" y="1965">Implementation phases embedded in the flow</text>
+  <text class="text" x="2380" y="1994">Phase 1: curve-native engine and basic validation. Phase 2: graph routing. Phase 3: surface/non-planar paths.</text>
+  <text class="text" x="2380" y="2018">Phase 4: mesh/Brep adapters. Phase 5: clay, motion, SCARA validation. Phase 6: profiles, tests, docs, firmware coverage.</text>
+  <text class="text" x="2380" y="2042">Each phase should add capability without changing the core typed artifact flow.</text>
+</svg>

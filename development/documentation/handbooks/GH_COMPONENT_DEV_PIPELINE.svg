@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Global Grasshopper C# Component Development Pipeline</title>
+  <desc id="desc">A reusable workflow diagram for developing future Grasshopper C# components: project setup, package references, component class, parameter managers, data access, computation, output handling, build, debug, and release.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#26323d"/>
+    </marker>
+    <style>
+      .bg { fill: #f7f8f4; }
+      .lane { fill: #ffffff; stroke: #cbd2cc; stroke-width: 2; rx: 8; }
+      .box { fill: #ffffff; stroke: #26323d; stroke-width: 2; rx: 8; }
+      .start { fill: #edf4ff; stroke: #2e5f9f; }
+      .code { fill: #eef8f0; stroke: #2f6b43; }
+      .gh { fill: #fff5df; stroke: #8b5b12; }
+      .geom { fill: #f5effb; stroke: #69458c; }
+      .data { fill: #eef8f8; stroke: #24737a; }
+      .check { fill: #f4f6f7; stroke: #58636d; }
+      .warn { fill: #fff0f0; stroke: #a43e3e; }
+      .title { font: 700 30px Arial, sans-serif; fill: #17202a; }
+      .subtitle { font: 16px Arial, sans-serif; fill: #3a4651; }
+      .section { font: 700 18px Arial, sans-serif; fill: #17202a; }
+      .text { font: 15px Arial, sans-serif; fill: #25313b; }
+      .small { font: 13px Arial, sans-serif; fill: #34414d; }
+      .mono { font: 13px Consolas, monospace; fill: #1e2a33; }
+      .arrow { stroke: #26323d; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #7d8790; stroke-width: 2; stroke-dasharray: 7 6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+  <text class="title" x="50" y="58">Global Grasshopper C# Component Development Pipeline</text>
+  <text class="subtitle" x="50" y="88">Reusable reference for upcoming components: design the node contract first, then implement package references, params, data access, compute logic, output shape, build, and debug.</text>
+
+  <rect class="lane" x="40" y="120" width="1520" height="145"/>
+  <text class="section" x="66" y="153">1. Project and Package Foundation</text>
+
+  <rect class="box start" x="70" y="175" width="245" height="66"/>
+  <text class="text" x="90" y="201">Create or open GH library</text>
+  <text class="small" x="90" y="224">Grasshopper Assembly for Rhino C#</text>
+
+  <rect class="box start" x="365" y="175" width="245" height="66"/>
+  <text class="text" x="385" y="201">Configure .csproj</text>
+  <text class="mono" x="385" y="224">TargetExt .gha</text>
+
+  <rect class="box start" x="660" y="175" width="245" height="66"/>
+  <text class="text" x="680" y="201">Reference SDK packages</text>
+  <text class="mono" x="680" y="224">Grasshopper + RhinoCommon</text>
+
+  <rect class="box start" x="955" y="175" width="245" height="66"/>
+  <text class="text" x="975" y="201">Assembly metadata</text>
+  <text class="mono" x="975" y="224">GH_AssemblyInfo</text>
+
+  <rect class="box start" x="1250" y="175" width="245" height="66"/>
+  <text class="text" x="1270" y="201">Debug launch setup</text>
+  <text class="small" x="1270" y="224">launchSettings or manual Rhino load</text>
+
+  <path class="arrow" d="M315 208 H365"/>
+  <path class="arrow" d="M610 208 H660"/>
+  <path class="arrow" d="M905 208 H955"/>
+  <path class="arrow" d="M1200 208 H1250"/>
+
+  <rect class="lane" x="40" y="295" width="1520" height="170"/>
+  <text class="section" x="66" y="328">2. Component Contract Design</text>
+
+  <rect class="box code" x="70" y="350" width="245" height="82"/>
+  <text class="text" x="90" y="377">Create component class</text>
+  <text class="mono" x="90" y="400">class X : GH_Component</text>
+  <text class="small" x="90" y="420">Name, nickname, description</text>
+
+  <rect class="box code" x="365" y="350" width="245" height="82"/>
+  <text class="text" x="385" y="377">Choose category</text>
+  <text class="mono" x="385" y="400">Category / Subcategory</text>
+  <text class="small" x="385" y="420">Where node appears in GH UI</text>
+
+  <rect class="box gh" x="660" y="350" width="245" height="82"/>
+  <text class="text" x="680" y="377">Define input contract</text>
+  <text class="mono" x="680" y="400">item / list / tree</text>
+  <text class="small" x="680" y="420">Names, nicknames, defaults</text>
+
+  <rect class="box gh" x="955" y="350" width="245" height="82"/>
+  <text class="text" x="975" y="377">Define output contract</text>
+  <text class="mono" x="975" y="400">item / list / tree</text>
+  <text class="small" x="975" y="420">Stable index order</text>
+
+  <rect class="box code" x="1250" y="350" width="245" height="82"/>
+  <text class="text" x="1270" y="377">Add identity</text>
+  <text class="mono" x="1270" y="400">Icon + unique Guid</text>
+  <text class="small" x="1270" y="420">Never reuse component GUIDs</text>
+
+  <path class="arrow" d="M315 391 H365"/>
+  <path class="arrow" d="M610 391 H660"/>
+  <path class="arrow" d="M905 391 H955"/>
+  <path class="arrow" d="M1200 391 H1250"/>
+
+  <rect class="lane" x="40" y="495" width="1520" height="215"/>
+  <text class="section" x="66" y="528">3. Runtime Implementation Pattern</text>
+
+  <rect class="box gh" x="70" y="555" width="220" height="110"/>
+  <text class="text" x="90" y="582">Register inputs</text>
+  <text class="mono" x="90" y="606">GH_InputParamManager</text>
+  <text class="small" x="90" y="628">AddXParameter(...)</text>
+  <text class="small" x="90" y="648">Set defaults here</text>
+
+  <rect class="box gh" x="330" y="555" width="220" height="110"/>
+  <text class="text" x="350" y="582">Register outputs</text>
+  <text class="mono" x="350" y="606">GH_OutputParamManager</text>
+  <text class="small" x="350" y="628">AddXParameter(...)</text>
+  <text class="small" x="350" y="648">Match intended result shape</text>
+
+  <rect class="box data" x="590" y="555" width="220" height="110"/>
+  <text class="text" x="610" y="582">Read data</text>
+  <text class="mono" x="610" y="606">IGH_DataAccess DA</text>
+  <text class="small" x="610" y="628">GetData / GetDataList</text>
+  <text class="small" x="610" y="648">Use same indexes as params</text>
+
+  <rect class="box check" x="850" y="555" width="220" height="110"/>
+  <text class="text" x="870" y="582">Validate inputs</text>
+  <text class="small" x="870" y="606">Null geometry</text>
+  <text class="small" x="870" y="628">Empty lists or branches</text>
+  <text class="small" x="870" y="648">Numeric tolerance and ranges</text>
+
+  <rect class="box geom" x="1110" y="555" width="220" height="110"/>
+  <text class="text" x="1130" y="582">Compute geometry</text>
+  <text class="mono" x="1130" y="606">Rhino.Geometry</text>
+  <text class="small" x="1130" y="628">Duplicate before mutation</text>
+  <text class="small" x="1130" y="648">Use document tolerance when needed</text>
+
+  <rect class="box data" x="70" y="685" width="220" height="0" opacity="0"/>
+  <rect class="box data" x="1370" y="555" width="150" height="110"/>
+  <text class="text" x="1390" y="582">Write results</text>
+  <text class="mono" x="1390" y="606">SetData</text>
+  <text class="mono" x="1390" y="626">SetDataList</text>
+  <text class="mono" x="1390" y="646">SetDataTree</text>
+
+  <path class="arrow" d="M290 610 H330"/>
+  <path class="arrow" d="M550 610 H590"/>
+  <path class="arrow" d="M810 610 H850"/>
+  <path class="arrow" d="M1070 610 H1110"/>
+  <path class="arrow" d="M1330 610 H1370"/>
+
+  <rect class="lane" x="40" y="740" width="1520" height="155"/>
+  <text class="section" x="66" y="773">4. Output Shape Decision</text>
+
+  <rect class="box data" x="70" y="795" width="300" height="70"/>
+  <text class="text" x="90" y="822">Item output</text>
+  <text class="mono" x="90" y="845">GH_ParamAccess.item + DA.SetData</text>
+
+  <rect class="box data" x="430" y="795" width="300" height="70"/>
+  <text class="text" x="450" y="822">List output</text>
+  <text class="mono" x="450" y="845">GH_ParamAccess.list + DA.SetDataList</text>
+
+  <rect class="box data" x="790" y="795" width="330" height="70"/>
+  <text class="text" x="810" y="822">Tree output</text>
+  <text class="mono" x="810" y="845">GH_Structure&lt;T&gt; + GH_Path + SetDataTree</text>
+
+  <rect class="box warn" x="1180" y="795" width="315" height="70"/>
+  <text class="text" x="1200" y="822">Common failure points</text>
+  <text class="small" x="1200" y="845">Index mismatch, reused GUID, invalid tokens</text>
+
+  <rect class="lane" x="40" y="925" width="1520" height="50"/>
+  <text class="section" x="66" y="956">5. Build, Test, Debug, Ship</text>
+  <text class="small" x="300" y="956">Build .gha</text>
+  <path class="arrow" d="M385 951 H455"/>
+  <text class="small" x="470" y="956">Load in Rhino/Grasshopper</text>
+  <path class="arrow" d="M650 951 H720"/>
+  <text class="small" x="735" y="956">Place node on canvas</text>
+  <path class="arrow" d="M880 951 H950"/>
+  <text class="small" x="965" y="956">Change inputs</text>
+  <path class="arrow" d="M1055 951 H1125"/>
+  <text class="small" x="1140" y="956">Breakpoint SolveInstance</text>
+  <path class="arrow" d="M1320 951 H1390"/>
+  <text class="small" x="1405" y="956">Release .gha</text>
+
+  <path class="dash" d="M1445 665 V735 H955 V795"/>
+  <path class="dash" d="M1372 241 V288 H192 V350"/>
+</svg>

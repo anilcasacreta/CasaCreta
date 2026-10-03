@@ -1,0 +1,47 @@
+# ===== .NET Build Output =====
+development/CasaCreta/bin/
+development/CasaCreta/obj/
+*.user
+*.suo
+
+# ===== IDE =====
+.vs/
+.idea/
+.vscode/
+*.swp
+*~
+
+# ===== NuGet =====
+packages/
+*.nupkg
+
+# ===== Rhino / Grasshopper =====
+*.bak
+*.rhl
+*.log
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+pydeps/
+
+# ===== Temporary / Generated =====
+tmp/
+chrome-profile*/
+edge-profile*/
+marlin_pages*/
+qa/
+
+# ===== OS =====
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ===== Agent config =====
+.agents/
+.codex/
+
+# ===== Generated documentation (optional — uncomment to exclude) =====
+# development/documentation/machine/*.pdf
+# development/documentation/machine/*.html
