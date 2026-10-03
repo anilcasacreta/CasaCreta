@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DurBeen ClayBot Mega operation and safety manual for Casa Creta.">
+  <title>DurBeen ClayBot Mega | Operation Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;family=Open+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --royal: #a65336;
+      --navy: #292b28;
+      --deep-blue: #353630;
+      --blue-gray: #5f685a;
+      --ink: #30322f;
+      --muted: #6f716a;
+      --line: #d8d2c7;
+      --soft: #eee8df;
+      --white: #fffdf9;
+      --page: #f7f4ee;
+      --surface: #fffdf9;
+      --sage: #65705b;
+      --danger: #a51e24;
+      --danger-bg: #fff1f1;
+      --warning: #805900;
+      --warning-bg: #fff8df;
+      --header-height: 76px;
+      --sidebar-width: 354px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--page);
+      font: 15px/1.7 "Open Sans", Arial, sans-serif;
+    }
+
+    button, summary, a { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--royal); }
+
+    .topbar {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      height: var(--header-height);
+      color: var(--ink);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .topbar-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 42px;
+    }
+
+    .wordmark {
+      color: var(--ink);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      text-decoration: none;
+    }
+
+    .wordmark small {
+      display: block;
+      margin-top: 1px;
+      color: #d8b09f;
+      font: 600 10px/1.2 "Open Sans", Arial, sans-serif;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .topnav { display: flex; align-items: center; gap: 28px; }
+    .topnav a,
+    .top-action {
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font: 600 14px "Montserrat", Arial, sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .topnav a:hover, .top-action:hover { color: #e0ad98; text-decoration: none; }
+
+    .edit-toolbar {
+      position: fixed;
+      z-index: 90;
+      right: 24px;
+      bottom: 24px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100vw - 48px);
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 10px 34px rgba(41,43,40,.2);
+    }
+
+    body.is-editing .edit-toolbar { display: flex; }
+
+    .edit-toolbar span {
+      color: var(--navy);
+      font: 600 13px "Montserrat", Arial, sans-serif;
+    }
+
+    .edit-toolbar button {
+      border: 1px solid var(--royal);
+      border-radius: 4px;
+      padding: 9px 13px;
+      color: var(--royal);
+      background: var(--white);
+      font: 600 12px "Montserrat", Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .edit-toolbar .download-button { color: var(--white); background: var(--royal); }
+
+    body.is-editing [contenteditable="true"] {
+      outline: 2px dashed rgba(166,83,54,.48);
+      outline-offset: 4px;
+      border-radius: 2px;
+      cursor: text;
+    }
+
+    body.is-editing [contenteditable="true"]:focus {
+      outline: 3px solid rgba(166,83,54,.75);
+      background: #fff8f2;
+    }
+
+    body.is-editing details.faq-item > summary { user-select: text; }
+
+    .menu-button {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 8px 11px;
+      color: var(--ink);
+      background: transparent;
+      font: 600 13px "Montserrat", Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .masthead {
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      padding: 20px 42px;
+      color: var(--ink);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      box-shadow: inset 6px 0 0 var(--royal);
+    }
+
+    .masthead-kicker {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--royal);
+      font: 700 10px/1.3 "Open Sans", Arial, sans-serif;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .masthead h1 {
+      margin: 0;
+      font: 500 clamp(23px, 2.5vw, 30px)/1.3 "Montserrat", Arial, sans-serif;
+    }
+
+    .masthead p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .manual-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      min-height: calc(100vh - var(--header-height));
+      transition: grid-template-columns .2s ease;
+    }
+
+    .manual-shell.nav-collapsed { grid-template-columns: 64px minmax(0, 1fr); }
+
+    .sidebar {
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      border-right: 1px solid var(--line);
+      padding: 30px 28px 70px 34px;
+      background: var(--soft);
+      scrollbar-color: #aaa397 #e4ded4;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-toggle {
+      width: 100%;
+      margin: 0 0 22px;
+      border: 1px solid #c9c1b5;
+      border-radius: 4px;
+      padding: 8px 10px;
+      color: var(--royal);
+      background: var(--white);
+      font: 600 12px "Montserrat", Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .sidebar-toggle:hover { color: var(--white); background: var(--royal); }
+
+    .manual-shell.nav-collapsed .sidebar {
+      overflow: hidden;
+      border-right-width: 1px;
+      padding: 28px 9px;
+    }
+
+    .manual-shell.nav-collapsed .sidebar h2,
+    .manual-shell.nav-collapsed .sidebar .nav-search,
+    .manual-shell.nav-collapsed .sidebar nav { display: none; }
+
+    .manual-shell.nav-collapsed .sidebar-toggle {
+      min-height: 46px;
+      margin: 0;
+      padding: 6px 2px;
+      font-size: 0;
+    }
+
+    .manual-shell.nav-collapsed .sidebar-toggle::after {
+      content: "›";
+      font: 500 28px/1 "Montserrat", Arial, sans-serif;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 9px; }
+    .sidebar::-webkit-scrollbar-track { background: #e4ded4; }
+    .sidebar::-webkit-scrollbar-thumb { background: #aaa397; border-radius: 8px; }
+
+    .sidebar h2 {
+      margin: 0 0 13px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #cec7bc;
+      color: var(--navy);
+      font: 600 18px "Montserrat", Arial, sans-serif;
+    }
+
+    .nav-search {
+      width: 100%;
+      margin: 0 0 24px;
+      border: 1px solid #c8c0b4;
+      border-radius: 5px;
+      padding: 9px 11px;
+      color: var(--ink);
+      background: var(--surface);
+      font: 13px "Open Sans", Arial, sans-serif;
+    }
+
+    .nav-search:focus { outline: 2px solid rgba(166,83,54,.35); border-color: var(--royal); }
+
+    .toc, .toc ul { margin: 0; padding: 0; list-style: none; }
+    .toc-group { margin: 0 0 27px; }
+
+    .toc-group-label {
+      display: block;
+      margin: 0 0 9px;
+      color: #77766e;
+      font: 700 10px/1.4 "Open Sans", Arial, sans-serif;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .toc-sections > li { margin: 0 0 10px; }
+
+    .toc a {
+      display: block;
+      color: var(--ink);
+      font: 500 14px/1.45 "Montserrat", Arial, sans-serif;
+      text-decoration: none;
+    }
+
+    .toc-section > a {
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .toc-subsections {
+      margin: 3px 0 0 13px !important;
+      padding-left: 13px !important;
+      border-left: 1px solid #c9c1b5;
+    }
+
+    .toc-subsections li { margin: 2px 0; }
+    .toc-subsections a { padding: 3px 7px; color: #4e504a; font-size: 13px; font-weight: 500; }
+    .toc a:hover { color: var(--royal); background: rgba(255,253,249,.62); }
+    .toc a.is-active { color: #7e3c28; background: #f8ded3; box-shadow: inset 3px 0 0 var(--royal); }
+
+    .toc-section.is-hidden, .toc-group.is-hidden { display: none; }
+
+    .content {
+      min-width: 0;
+      padding: 54px clamp(36px, 6vw, 108px) 100px;
+      background: var(--surface);
+    }
+
+    .content-inner { max-width: 1040px; margin: 0 auto; }
+
+    .faq-group {
+      display: none;
+      margin: 0 0 64px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      scroll-margin-top: calc(var(--header-height) + 20px);
+    }
+
+    .faq-group.is-current,
+    body.is-editing .faq-group { display: block; }
+
+    .faq-group > h2 {
+      display: block;
+      margin: 0 0 24px;
+      color: var(--navy);
+      font: 500 clamp(22px, 2.4vw, 27px)/1.3 "Montserrat", Arial, sans-serif;
+    }
+
+    .faq-group > h2::after { display: none; }
+
+    details.faq-item {
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: calc(var(--header-height) + 18px);
+    }
+
+    details.faq-item:first-of-type { border-top: 1px solid var(--line); }
+    details.faq-item[open] { box-shadow: inset 2px 0 0 var(--royal); background: transparent; }
+
+    details.faq-item > summary {
+      position: relative;
+      padding: 24px 54px 24px 20px;
+      color: var(--ink);
+      font: 500 17px/1.4 "Montserrat", Arial, sans-serif;
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    details.faq-item > summary::-webkit-details-marker { display: none; }
+    details.faq-item > summary::after {
+      content: "+";
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      color: var(--royal);
+      font: 400 24px/1 "Montserrat", Arial, sans-serif;
+    }
+    details.faq-item[open] > summary::after { content: "−"; }
+    details.faq-item > summary:hover { color: var(--royal); background: #fcf6ef; }
+
+    .answer {
+      padding: 0 20px 26px;
+      color: #575a54;
+    }
+
+    .answer > :first-child { margin-top: 0; }
+    .answer > :last-child { margin-bottom: 0; }
+    .answer h3 {
+      margin: 25px 0 10px;
+      color: var(--blue-gray);
+      font: 600 16px "Montserrat", Arial, sans-serif;
+    }
+    .answer ol, .answer ul { padding-left: 24px; }
+    .answer li { margin: 7px 0; }
+
+    .spec-table {
+      width: 100%;
+      margin: 12px 0;
+      border-collapse: collapse;
+    }
+    .spec-table th, .spec-table td {
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .spec-table th {
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      background: #e9e5de;
+      font-family: "Montserrat", Arial, sans-serif;
+      font-weight: 600;
+    }
+    .spec-table tbody tr:nth-child(even) { background: #f7f5f1; }
+    .spec-table td:first-child { width: 34%; font-weight: 600; }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 50px;
+    }
+
+    .danger, .warning, .data-required {
+      margin: 20px 0 4px;
+      padding: 17px 20px;
+      border-radius: 0 5px 5px 0;
+    }
+    .danger { border-left: 6px solid var(--danger); color: #68161b; background: var(--danger-bg); }
+    .danger.critical { font-size: 17px; line-height: 1.65; font-weight: 600; }
+    .warning { border-left: 6px solid var(--warning); color: #624600; background: var(--warning-bg); }
+    .data-required { border: 1px solid var(--line); color: var(--muted); background: #f3eee6; font-style: italic; }
+    .danger strong, .warning strong { font-family: "Montserrat", Arial, sans-serif; text-transform: uppercase; }
+
+    .mobile-overlay { display: none; }
+
+    .page-navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      margin-top: 54px;
+      padding-top: 25px;
+      border-top: 1px solid var(--line);
+    }
+
+    .page-link {
+      display: grid;
+      min-width: 190px;
+      padding: 8px 0;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .page-link[hidden] { display: none; }
+
+    .page-link.next { margin-left: auto; text-align: right; }
+    .page-link:hover { color: var(--royal); }
+
+    .page-direction {
+      color: var(--muted);
+      font: 700 10px/1.4 "Open Sans", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .page-title { margin-top: 3px; font: 500 14px/1.4 "Montserrat", Arial, sans-serif; }
+    body.is-editing .page-navigation { display: none; }
+
+    .footer {
+      padding: 30px 40px;
+      color: rgba(255,255,255,.68);
+      background: var(--navy);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      :root { --sidebar-width: 300px; }
+      .topnav a { display: none; }
+      .content { padding-inline: 34px; }
+      .sidebar { padding-left: 30px; padding-right: 25px; }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner { padding: 0 18px; }
+      .topnav { gap: 12px; }
+      .print-button { display: none; }
+      .menu-button { display: inline-block; }
+      .masthead { min-height: 84px; padding: 16px 20px; }
+      .manual-shell { display: block; }
+      .sidebar {
+        position: fixed;
+        z-index: 70;
+        top: var(--header-height);
+        bottom: 0;
+        left: 0;
+        width: min(86vw, 360px);
+        height: auto;
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+        box-shadow: 16px 0 40px rgba(41,43,40,.2);
+      }
+      .sidebar-toggle { display: none; }
+      .manual-shell.nav-collapsed { display: block; }
+      .manual-shell.nav-collapsed .sidebar {
+        overflow-y: auto;
+        border-right-width: 1px;
+        padding: 30px 28px 70px 34px;
+      }
+      .manual-shell.nav-collapsed .sidebar h2,
+      .manual-shell.nav-collapsed .sidebar .nav-search,
+      .manual-shell.nav-collapsed .sidebar nav { display: block; }
+      .sidebar.is-open { transform: translateX(0); }
+      .mobile-overlay {
+        position: fixed;
+        z-index: 65;
+        inset: var(--header-height) 0 0;
+        display: none;
+        border: 0;
+        background: rgba(41,43,40,.45);
+      }
+      .mobile-overlay.is-open { display: block; }
+      .content { padding: 42px 18px 80px; }
+      .faq-group { padding: 0; border-radius: 0; }
+      .page-navigation { gap: 18px; margin-top: 38px; }
+      .page-link { min-width: 0; max-width: 48%; }
+      .two-columns { grid-template-columns: 1fr; gap: 0; }
+      details.faq-item > summary { padding-left: 6px; }
+      .answer { padding-left: 6px; padding-right: 6px; }
+      .spec-table { display: block; overflow-x: auto; }
+      .spec-table th, .spec-table td { min-width: 145px; }
+      .edit-toolbar {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        max-width: none;
+        flex-wrap: wrap;
+      }
+      .edit-toolbar span { width: 100%; }
+    }
+
+    @media print {
+      @page { margin: 15mm; }
+      .topbar, .masthead, .sidebar, .mobile-overlay, .footer, .edit-toolbar, .page-navigation { display: none !important; }
+      .manual-shell { display: block; }
+      .content { padding: 0; }
+      .faq-group { display: block !important; margin-bottom: 28px; break-inside: auto; }
+      .faq-group > h2 { font-size: 24px; }
+      details.faq-item { break-inside: avoid; }
+      details.faq-item > summary { padding: 13px 0; }
+      details.faq-item > summary::after { display: none; }
+      details.faq-item > .answer { display: block !important; padding: 0 0 16px; }
+      body { color: #000; font-size: 10pt; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="#machine-overview">CASA CRETA<small>DurBeen ClayBot Mega</small></a>
+      <nav class="topnav" aria-label="Top navigation">
+        <a href="#machine-overview">Manual</a>
+        <a href="#settings-recipes">Settings</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#emergency">Emergency</a>
+        <button class="top-action" id="editButton" type="button">Edit Content</button>
+        <button class="top-action print-button" type="button" onclick="window.print()">Print</button>
+        <button class="menu-button" id="menuButton" type="button" aria-controls="sidebar" aria-expanded="false">Sections</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="masthead">
+    <div>
+      <span class="masthead-kicker">Technical Documentation</span>
+      <h1>ClayBot Mega Operation Manual</h1>
+      <p>Machine operation, maintenance, troubleshooting, and compressed-air safety.</p>
+    </div>
+  </section>
+
+  <div class="manual-shell">
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="manualNavigation" aria-label="Collapse navigation panel">Collapse Navigation</button>
+      <h2>Navigation</h2>
+      <input class="nav-search" id="navSearch" type="search" placeholder="Search sections" aria-label="Search manual sections">
+      <nav id="manualNavigation" aria-label="Manual sections">
+        <ul class="toc">
+          <li class="toc-group">
+            <span class="toc-group-label">Getting Started</span>
+            <ul class="toc-sections">
+              <li class="toc-section">
+                <a href="#machine-overview">Machine Overview</a>
+                <ul class="toc-subsections"><li><a href="#machine-specifications">Specifications</a></li><li><a href="#main-components">Main Components</a></li><li><a href="#labelled-photos">Labelled Photos</a></li></ul>
+              </li>
+              <li class="toc-section">
+                <a href="#before-start">Before You Start</a>
+                <ul class="toc-subsections"><li><a href="#pre-start-checks">Pre-start Checks</a></li><li><a href="#studio-environment">Studio &amp; Base</a></li><li><a href="#clay-preparation">Clay Preparation</a></li><li><a href="#opening-cylinder">Opening the Cylinder</a></li><li><a href="#loading-cylinder">Loading the Cylinder</a></li><li><a href="#touchscreen-controls">Homing &amp; Movement</a></li></ul>
+              </li>
+            </ul>
+          </li>
+          <li class="toc-group">
+            <span class="toc-group-label">Operating</span>
+            <ul class="toc-sections">
+              <li class="toc-section"><a href="#start-print">Start a Print</a><ul class="toc-subsections"><li><a href="#print-sequence">Print Sequence</a></li><li><a href="#usb-rule">USB Drive Rule</a></li></ul></li>
+              <li class="toc-section"><a href="#during-printing">During Printing</a><ul class="toc-subsections"><li><a href="#printing-checks">What to Check</a></li><li><a href="#flow-layer-control">Flow &amp; Layer Quality</a></li><li><a href="#live-adjustments">Live Adjustments</a></li><li><a href="#printing-do-not">Do Not Touch or Change</a></li></ul></li>
+              <li class="toc-section"><a href="#finish-print">Finish the Print</a><ul class="toc-subsections"><li><a href="#finish-sequence">Finish Sequence</a></li><li><a href="#print-record">Print Record</a></li></ul></li>
+            </ul>
+          </li>
+          <li class="toc-group">
+            <span class="toc-group-label">Care &amp; Service</span>
+            <ul class="toc-sections">
+              <li class="toc-section"><a href="#cleaning">Cleaning</a><ul class="toc-subsections"><li><a href="#cleaning-sequence">Cleaning Steps</a></li><li><a href="#nozzle-cleaning">Nozzle Cleaning</a></li><li><a href="#pipe-cylinder-cleaning">Pipe &amp; Cylinder</a></li><li><a href="#exterior-cleaning">Exterior Cleaning</a></li><li><a href="#water-restrictions">Water Restrictions</a></li><li><a href="#purging-pipe">Purging Old Clay</a></li></ul></li>
+              <li class="toc-section"><a href="#maintenance">Maintenance</a><ul class="toc-subsections"><li><a href="#maintenance-schedule">Maintenance Schedule</a></li></ul></li>
+              <li class="toc-section"><a href="#troubleshooting">Troubleshooting</a><ul class="toc-subsections"><li><a href="#problem-actions">Problem → Action</a></li></ul></li>
+            </ul>
+          </li>
+          <li class="toc-group">
+            <span class="toc-group-label">Reference &amp; Safety</span>
+            <ul class="toc-sections">
+              <li class="toc-section"><a href="#settings-recipes">Settings &amp; Recipes</a><ul class="toc-subsections"><li><a href="#known-settings">Known Settings</a></li></ul></li>
+              <li class="toc-section"><a href="#emergency">Emergency / Do Not Do</a><ul class="toc-subsections"><li><a href="#stop-immediately">Stop Immediately</a></li><li><a href="#emergency-actions">Emergency Actions</a></li><li><a href="#manufacturer-contact">Manufacturer Contact</a></li></ul></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <button class="mobile-overlay" id="mobileOverlay" type="button" aria-label="Close sections menu"></button>
+
+    <main class="content">
+      <div class="content-inner">
+        <section class="faq-group" id="machine-overview">
+          <h2>Machine Overview</h2>
+
+          <details class="faq-item" id="machine-specifications" open>
+            <summary>Machine Specifications</summary>
+            <div class="answer">
+              <table class="spec-table">
+                <thead><tr><th>Item</th><th>Specification</th></tr></thead>
+                <tbody>
+                  <tr><td>Machine</td><td>DurBeen ClayBot Mega</td></tr>
+                  <tr><td>Type</td><td>Ceramic extrusion 3D printer</td></tr>
+                  <tr><td>Build volume</td><td>1000 × 1000 × 1000 mm</td></tr>
+                  <tr><td>Nozzle range</td><td>1–10 mm</td></tr>
+                  <tr><td>Clay capacity</td><td>10 L / approximately 23 kg</td></tr>
+                  <tr><td>Extrusion system</td><td>Pneumatic auger extruder</td></tr>
+                  <tr><td>Cylinder feed pressure</td><td>10–12 bar</td></tr>
+                  <tr><td>Maximum print speed</td><td>30 mm/s</td></tr>
+                  <tr><td>Maximum travel speed</td><td>50 mm/s</td></tr>
+                  <tr><td>Input power</td><td>220–240 V AC</td></tr>
+                  <tr><td>Voltage stabilizer</td><td>2–3 kVA</td></tr>
+                  <tr><td>Recommended studio temperature</td><td>15–35 °C</td></tr>
+                  <tr><td>Recommended relative humidity</td><td>20–80%</td></tr>
+                  <tr><td>Controls</td><td>TFT touchscreen</td></tr>
+                  <tr><td>File input</td><td>USB drive</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="faq-item" id="main-components">
+            <summary>Main Components</summary>
+            <div class="answer two-columns">
+              <ul>
+                <li>Machine frame and motion axes</li><li>Print bed/build plate</li><li>Clay cylinder</li><li>Air regulator and pressure gauge</li><li>Material hose</li>
+              </ul>
+              <ul>
+                <li>Motor-driven auger extruder</li><li>Nozzle</li><li>TFT touchscreen/controller</li><li>Voltage stabilizer</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="faq-item" id="labelled-photos">
+            <summary>Labelled Photos Required</summary>
+            <div class="answer">
+              <ul><li>Full machine</li><li>Controls and emergency stop</li><li>Clay cylinder and air regulator</li><li>Hose connections</li><li>Extruder, auger, and nozzle</li><li>Print bed and home position</li></ul>
+            </div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="before-start">
+          <h2>Before You Start</h2>
+          <details class="faq-item" id="pre-start-checks" open>
+            <summary>Pre-start Checks</summary>
+            <div class="answer">
+              <ol><li>Confirm the studio and build base meet the requirements below.</li><li>Remove everything from the printable area before homing.</li><li>Check the air pipes and connectors for correct operation and leakage.</li><li>Switch on the compressor and confirm 14–16 bar tank pressure.</li><li>Load prepared clay and set the cylinder feed pressure to 10–12 bar.</li><li>Home the machine and confirm the nozzle position above the bed.</li></ol>
+            </div>
+          </details>
+          <details class="faq-item" id="studio-environment">
+            <summary>Studio Environment and Build Base</summary>
+            <div class="answer"><ul><li>Operate in a ventilated, dry, clean, and level studio area.</li><li>Recommended studio temperature: 15–35 °C.</li><li>Recommended relative humidity: 20–80%.</li><li>Secure the printer on a flat and stable surface.</li><li>Use a firm, moisture-resistant wooden build board that cannot warp under wet clay.</li></ul><div class="warning"><strong>Warning:</strong> A warped or loose build board can distort the first layers and cause the printed piece to fail.</div></div>
+          </details>
+          <details class="faq-item" id="clay-preparation">
+            <summary>Clay Preparation and Consistency</summary>
+            <div class="answer"><ol><li>Pug and de-air the clay thoroughly before loading.</li><li>Remove hard particles, plastic, dry fragments, and all foreign material.</li><li>Prepare a smooth, uniform paste without air bubbles.</li><li>A studio starting reference is approximately 30 parts water to 100 parts dry clay by weight; adjust for the clay body and test extrusion.</li><li>The clay must extrude smoothly while remaining stiff enough to hold the printed layers.</li></ol><div class="data-required"><strong>Record required:</strong> approved clay body, measured water ratio, batch number, and successful settings.</div></div>
+          </details>
+          <details class="faq-item" id="opening-cylinder">
+            <summary>Opening the Clay Cylinder</summary>
+            <div class="answer">
+              <ol><li>Release all cylinder pressure using the regulator control.</li><li>Confirm the cylinder is fully depressurized.</li><li>Remove the air pipe from the top of the cylinder.</li><li>Only then open the cylinder cap.</li></ol>
+              <div class="danger critical"><strong>Danger:</strong> Never open a connected or pressurized cylinder. Trapped pressure can launch the heavy metal cap without warning, causing a crushing impact, broken bones, or serious injury.</div>
+            </div>
+          </details>
+          <details class="faq-item" id="loading-cylinder">
+            <summary>Loading the Clay Cylinder</summary>
+            <div class="answer"><ol><li>Open the cylinder only after completing the depressurization procedure above.</li><li>Clean the cylinder interior with a soft damp cloth, then confirm it is clean and dry.</li><li>Form the prepared clay into small, dense portions.</li><li>Pack each portion firmly from the bottom upward, compressing every layer to remove air gaps.</li><li>Leave 2–4 cm of free space at the top for plunger movement.</li><li>Install the plunger and close the cylinder evenly and securely.</li><li>Check the pressure seal before operation.</li></ol><div class="warning"><strong>Do not:</strong> Strike the lid or cylinder with a hammer or heavy tool. This can deform the closure and damage the pneumatic pressure seal.</div><div class="warning"><strong>New batch rule:</strong> Do not add fresh clay over old clay. Empty and clean the cylinder, then load one consistent fresh batch.</div></div>
+          </details>
+          <details class="faq-item" id="touchscreen-controls">
+            <summary>Homing, Manual Movement, and Extrusion</summary>
+            <div class="answer"><h3>Home the machine</h3><ol><li>Open <strong>Menu → Movement → Home</strong>.</li><li>Select <strong>Home</strong> to synchronize all axes with their reference positions.</li></ol><h3>Move an axis manually</h3><ol><li>Open <strong>Menu → Movement → Move</strong>.</li><li>Select a movement step of 0.1, 1, or 10 mm.</li><li>Move one step at a time. Do not press movement controls repeatedly.</li></ol><h3>Extrude manually</h3><ol><li>Open <strong>Menu → Movement → Extrude</strong>.</li><li>Set the step value to <strong>10</strong> and speed to <strong>Slow</strong>.</li><li>Run extrusion while watching the hose outlet or nozzle.</li></ol></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="start-print">
+          <h2>Start a Print</h2>
+          <details class="faq-item" id="print-sequence" open>
+            <summary>Print Sequence</summary>
+            <div class="answer">
+              <ol><li>Prepare the model as STL, OBJ, or 3MF.</li><li>Slice it using the approved ClayBot Mega profile.</li><li>Keep the toolpath inside the 1000 × 1000 × 1000 mm build volume.</li><li>Export the G-code and load it using a USB drive.</li><li>Confirm nozzle size, layer height, speed, extrusion rate, and print position.</li><li>Set cylinder feed pressure within the recorded 10–12 bar operating range.</li><li>Run manual extrusion and purge the older clay from the delivery pipe until fresh clay flows continuously.</li><li>Open <strong>Print</strong>, select the correct file, and select <strong>Start</strong>.</li><li>Watch the first 3–4 layers continuously.</li></ol>
+              <div class="data-required"><strong>Data required:</strong> approved slicer profile, start/end G-code, layer height, auger rate, and origin.</div>
+            </div>
+          </details>
+          <details class="faq-item" id="usb-rule">
+            <summary>USB / Pen Drive Rule</summary>
+            <div class="answer"><div class="danger critical"><strong>Danger:</strong> Do not remove the USB drive while the print job is running.</div></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="during-printing">
+          <h2>During Printing</h2>
+          <details class="faq-item" id="printing-checks" open>
+            <summary>What to Check</summary>
+            <div class="answer"><ul><li>Watch the first 3–4 layers continuously.</li><li>Continuous clay flow</li><li>Uniform bead width and layer height</li><li>Good bonding between layers</li><li>No bubbles, gaps, or nozzle blockage</li><li>Stable walls without leaning or collapse</li><li>Free movement of the hose and printhead</li><li>Never leave the machine running completely unattended.</li></ul></div>
+          </details>
+          <details class="faq-item" id="flow-layer-control">
+            <summary>Flow Rate and Layer Quality</summary>
+            <div class="answer"><ul><li>Balance print speed with clay flow. Excessive flow at low speed produces thick, irregular deposits.</li><li>Calibrate Z height so each layer bonds firmly to the layer below.</li><li>Layers must not rest loosely on one another.</li><li>Do not squash layers so tightly that clay spreads into a sticky mass.</li></ul></div>
+          </details>
+          <details class="faq-item" id="live-adjustments">
+            <summary>Live Adjustments and Wavy Extrusion</summary>
+            <div class="answer"><h3>Speed or flow correction</h3><ol><li>Open <strong>More → Speed</strong>.</li><li>Use <strong>ADD/DEC</strong> to adjust speed or flow rate in 1%, 5%, or 10% increments.</li><li>Use the smallest correction possible and observe several toolpath lines before changing it again.</li></ol><div class="warning"><strong>Note:</strong> Mid-print changes can create visible blotches in the finished piece.</div><h3>Wavy extrusion</h3><ol><li>Select <strong>Pause</strong>.</li><li>Stop extrusion and isolate electrical power and compressed air.</li><li>Depressurize the clay system before touching the printhead.</li><li>Inspect and tighten the fasteners directly above the nozzle.</li><li>Restart only after the printhead and pressure system are secure.</li></ol></div>
+          </details>
+          <details class="faq-item" id="printing-do-not">
+            <summary>What Not to Touch or Change</summary>
+            <div class="answer"><ul><li>Do not leave the printer completely unattended.</li><li>Do not reach into the motion area.</li><li>Do not touch moving parts or the nozzle.</li><li>Do not open the pressurized cylinder.</li><li>Do not disconnect pressurized hoses.</li><li>Do not move the bed or printed piece.</li><li>Do not make large pressure or setting changes during printing.</li></ul></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="finish-print">
+          <h2>Finish the Print</h2>
+          <details class="faq-item" id="finish-sequence" open>
+            <summary>Finish Sequence</summary>
+            <div class="answer"><ol><li>Confirm printing, motion, and extrusion have stopped.</li><li>Stop the auger.</li><li>Park the printhead using the machine controls.</li><li>Isolate the compressed-air supply.</li><li>Depressurize the clay system and confirm the gauge reads zero.</li><li>Remove the piece with its build plate where possible.</li><li>Move it on a flat, rigid support to the drying area.</li><li>Label and record the print.</li></ol></div>
+          </details>
+          <details class="faq-item" id="print-record">
+            <summary>Print Record</summary>
+            <div class="answer two-columns"><ul><li>Job/part ID</li><li>File name and revision</li><li>Date and operator</li><li>Clay batch/recipe</li></ul><ul><li>Nozzle size</li><li>Layer height and speed</li><li>Auger setting and air pressure</li><li>Print result and defects</li></ul></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="cleaning">
+          <h2>Cleaning</h2>
+          <details class="faq-item" id="cleaning-sequence" open>
+            <summary>Cleaning Steps</summary>
+            <div class="answer"><ol><li>Stop the machine, isolate electrical power, and fully depressurize the clay system.</li><li>Remove remaining clay before it dries.</li><li>Clean the nozzle, removable clay-contact parts, build plate, and spills using the procedures below.</li><li>Inspect the nozzle, auger, hose, seals, and fittings.</li><li>Dry cleaned parts before reassembly or storage.</li></ol><div class="data-required"><strong>Data required:</strong> approved auger-disassembly and internal printhead-cleaning procedure.</div></div>
+          </details>
+          <details class="faq-item" id="nozzle-cleaning">
+            <summary>Nozzle Cleaning</summary>
+            <div class="answer"><ol><li>Remove the nozzle only after the machine and pressure system are isolated.</li><li>Wash the removed nozzle under warm water immediately after printing.</li><li>Clean the opening with a wooden skewer or plastic pick.</li><li>Confirm no clay remains inside the opening.</li><li>Dry the clean nozzle before storage or reinstallation.</li></ol><div class="warning"><strong>Do not:</strong> Use metal needles or metal picks. They can scratch or enlarge the nozzle opening and change extrusion accuracy.</div></div>
+          </details>
+          <details class="faq-item" id="pipe-cylinder-cleaning">
+            <summary>Delivery Pipe and Cylinder Cleaning</summary>
+            <div class="answer"><h3>Delivery pipe</h3><ol><li>Disconnect and remove the pipe only after complete depressurization.</li><li>Flush the detached pipe thoroughly with water away from the printer and electrical equipment.</li><li>Remove all clay buildup and dry the pipe before reconnection.</li></ol><h3>Clay cylinder</h3><ol><li>Open the cylinder using the approved depressurization procedure.</li><li>Wash the interior with water and a soft sponge.</li><li>Do not use abrasive metal scrubbers.</li><li>Rinse, dry, and inspect the cylinder wall, plunger, and pressure seal before reassembly.</li></ol></div>
+          </details>
+          <details class="faq-item" id="exterior-cleaning">
+            <summary>Exterior Cleaning</summary>
+            <div class="answer"><ul><li>Use only a soft damp cloth or microfiber cloth on non-electrical exterior surfaces.</li><li>Use a clean, non-shedding cloth; loose fibres can contaminate clay or become caught in moving hardware.</li><li>Do not spray water or cleaning liquid directly onto the machine.</li></ul></div>
+          </details>
+          <details class="faq-item" id="water-restrictions">
+            <summary>What Must Never Be Cleaned with Water</summary>
+            <div class="answer"><ul><li>Touchscreen, controller, switches, or electrical cabinet</li><li>Motors, drivers, sensors, or connectors</li><li>Bearings, rails, belts, screws, or lubricated parts</li><li>Voltage stabilizer or power connections</li></ul></div>
+          </details>
+          <details class="faq-item" id="purging-pipe">
+            <summary>Purging Old Clay from the Material Pipe</summary>
+            <div class="answer"><ol><li>Depressurize the system before disconnecting the pipe from the nozzle.</li><li>Secure the pipe outlet inside a collection container.</li><li>Confirm there is enough clay in the cylinder.</li><li>Apply cylinder pressure and purge the old clay from the 1.5–2 m pipe.</li><li>Stop before the cylinder becomes empty.</li></ol><div class="danger critical"><strong>Danger:</strong> Never let the cylinder run empty while purging old clay through the detached material pipe. At 10–12 bar, compressed air can suddenly blast the remaining clay from the pipe outlet and cause serious injury. The hazard in this condition is the violent clay-and-air discharge from the pipe. Secure the outlet inside a collection container, keep everyone away, and stop before the clay runs out.</div></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="maintenance">
+          <h2>Maintenance</h2>
+          <details class="faq-item" id="maintenance-schedule" open>
+            <summary>Maintenance Schedule</summary>
+            <div class="answer"><table class="spec-table"><thead><tr><th>Interval</th><th>Main Work</th></tr></thead><tbody><tr><td>Daily</td><td>Clean and inspect nozzle, hose, seals, fittings, bed, cables, and controls.</td></tr><tr><td>Weekly</td><td>Check rails, belts/screws, fasteners, limit switches, auger, and cylinder closure.</td></tr><tr><td>Every 2 weeks</td><td>Clean and lubricate the approved hinges, rails, and moving points using the manufacturer-approved grease.</td></tr><tr><td>Monthly</td><td>Check alignment, bed level, homing, electrical enclosure, and pressure components.</td></tr></tbody></table><div class="data-required"><strong>Data required:</strong> approved grease specification, exact lubrication points, adjustment limits, and replacement-part numbers.</div></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="troubleshooting">
+          <h2>Troubleshooting</h2>
+          <details class="faq-item" id="problem-actions" open>
+            <summary>If This Happens → Do This</summary>
+            <div class="answer"><table class="spec-table"><thead><tr><th>Problem</th><th>Main Action</th></tr></thead><tbody><tr><td>Clay not extruding</td><td>Check clay supply, pressure, auger, hose, and nozzle.</td></tr><tr><td>Blocked nozzle</td><td>Stop, depressurize, remove, and clean the nozzle.</td></tr><tr><td>Uneven extrusion</td><td>Purge air; check clay consistency, pressure, auger rate, and blockage.</td></tr><tr><td>Wavy extrusion</td><td>Pause, isolate power and air, depressurize, then inspect and tighten the fasteners above the nozzle.</td></tr><tr><td>Air bubbles</td><td>Use de-aired clay and refill the cylinder without air pockets.</td></tr><tr><td>Print collapsing</td><td>Use stiffer clay or reduce layer height, flow, or unsupported geometry.</td></tr><tr><td>Layers separating</td><td>Check clay moisture, layer height, print speed, Z height, and extrusion flow.</td></tr><tr><td>Machine stops</td><td>Record the error; check power, file, controller, and axis obstruction.</td></tr><tr><td>Nozzle collision</td><td>Stop immediately; check homing, origin, bed level, and nozzle offset.</td></tr><tr><td>Hose or fitting leak</td><td>Stop, isolate air, depressurize, and replace the damaged part.</td></tr><tr><td>File rejected</td><td>Re-export G-code using the approved slicer profile and USB drive.</td></tr></tbody></table></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="settings-recipes">
+          <h2>Settings &amp; Recipes</h2>
+          <details class="faq-item" id="known-settings" open>
+            <summary>Known Settings</summary>
+            <div class="answer"><table class="spec-table"><thead><tr><th>Parameter</th><th>Known Value</th></tr></thead><tbody><tr><td>Nozzle diameter</td><td>1–10 mm</td></tr><tr><td>Maximum print speed</td><td>30 mm/s</td></tr><tr><td>Maximum travel speed</td><td>50 mm/s</td></tr><tr><td>Acceleration</td><td>25 mm/s²</td></tr><tr><td>Cylinder feed pressure</td><td>10–12 bar</td></tr><tr><td>Manual move steps</td><td>0.1, 1, or 10 mm</td></tr><tr><td>Manual extrusion</td><td>Step 10; Slow speed</td></tr><tr><td>Layer height</td><td><strong>Data required</strong></td></tr><tr><td>Auger/extrusion rate</td><td><strong>Data required</strong></td></tr><tr><td>Clay/water starting reference</td><td>Approximately 30 parts water to 100 parts dry clay by weight; test each clay body</td></tr><tr><td>Casa Creta piece settings</td><td><strong>Data required</strong></td></tr></tbody></table></div>
+          </details>
+        </section>
+
+        <section class="faq-group" id="emergency">
+          <h2>Emergency / Do Not Do</h2>
+          <details class="faq-item" id="stop-immediately" open>
+            <summary>When to Stop Immediately</summary>
+            <div class="answer"><ul><li>Person or object in the motion path</li><li>Nozzle or axis collision</li><li>Hose, fitting, regulator, or cylinder leak</li><li>Abnormal noise, vibration, heat, smell, or smoke</li><li>Uncontrolled extrusion</li><li>Print collapse into the printhead path</li></ul></div>
+          </details>
+          <details class="faq-item" id="emergency-actions">
+            <summary>Emergency Actions</summary>
+            <div class="answer"><ol><li>Press the emergency stop if fitted and identified. If no emergency stop is available, switch off power at the main control when safe to do so.</li><li>Keep people away from moving and pressurized components.</li><li>Isolate electrical power and compressed air when safe.</li><li>Do not open the clay system until the gauge reads zero.</li><li>Do not restart until the fault is identified.</li></ol><div class="data-required"><strong>Data required:</strong> emergency-stop location, reset procedure, main isolator location, and Casa Creta emergency contact.</div></div>
+          </details>
+          <details class="faq-item" id="manufacturer-contact">
+            <summary>Manufacturer Contact</summary>
+            <div class="answer"><ul><li><a href="tel:+919922714414">+91 99227 14414</a></li><li><a href="tel:+919664940997">+91 96649 40997</a></li><li><a href="mailto:durbeendesignworks@gmail.com">durbeendesignworks@gmail.com</a></li></ul></div>
+          </details>
+          <details class="faq-item" id="sources">
+            <summary>Sources</summary>
+            <div class="answer"><ul><li><a href="https://www.durbeen.in/ceramic-3d-printer-claybolt-mega">DurBeen ClayBot Mega product page</a></li><li>Casa Creta operating and safety information recorded in this manual.</li></ul></div>
+          </details>
+        </section>
+
+        <nav class="page-navigation" aria-label="Major section navigation">
+          <a class="page-link previous" id="previousPage" href="#">
+            <span class="page-direction">← Previous</span>
+            <span class="page-title" id="previousPageTitle"></span>
+          </a>
+          <a class="page-link next" id="nextPage" href="#">
+            <span class="page-direction">Next →</span>
+            <span class="page-title" id="nextPageTitle"></span>
+          </a>
+        </nav>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">DurBeen ClayBot Mega · Casa Creta Operation Manual</footer>
+
+  <div class="edit-toolbar" role="status" aria-live="polite">
+    <span>Edit mode is active</span>
+    <button id="finishEditButton" type="button">Finish Editing</button>
+    <button class="download-button" id="downloadHtmlButton" type="button">Download Edited HTML</button>
+  </div>
+
+  <script>
+    (() => {
+      const sidebar = document.getElementById('sidebar');
+      const manualShell = document.querySelector('.manual-shell');
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const navSearch = document.getElementById('navSearch');
+      const menuButton = document.getElementById('menuButton');
+      const overlay = document.getElementById('mobileOverlay');
+      const tocLinks = [...document.querySelectorAll('.toc a')];
+      const editButton = document.getElementById('editButton');
+      const finishEditButton = document.getElementById('finishEditButton');
+      const downloadHtmlButton = document.getElementById('downloadHtmlButton');
+      const editableTargets = [...document.querySelectorAll('.masthead h1, .masthead p, .faq-group > h2, details.faq-item > summary, .answer')];
+      const majorSections = [...document.querySelectorAll('.faq-group')];
+      const previousPage = document.getElementById('previousPage');
+      const nextPage = document.getElementById('nextPage');
+      const previousPageTitle = document.getElementById('previousPageTitle');
+      const nextPageTitle = document.getElementById('nextPageTitle');
+
+      function sectionTitle(section) {
+        return section.querySelector(':scope > h2').textContent.trim();
+      }
+
+      function updatePageNavigation(section) {
+        const index = majorSections.indexOf(section);
+        const previous = majorSections[index - 1];
+        const next = majorSections[index + 1];
+
+        previousPage.hidden = !previous;
+        nextPage.hidden = !next;
+
+        if (previous) {
+          previousPage.href = '#' + previous.id;
+          previousPageTitle.textContent = sectionTitle(previous);
+        }
+        if (next) {
+          nextPage.href = '#' + next.id;
+          nextPageTitle.textContent = sectionTitle(next);
+        }
+      }
+
+      function showTarget(id, updateHistory = true, smooth = true) {
+        const target = document.getElementById(id) || majorSections[0];
+        const section = target.matches('.faq-group') ? target : target.closest('.faq-group');
+        if (!section) return;
+
+        majorSections.forEach((item) => item.classList.toggle('is-current', item === section));
+        if (target.matches('details.faq-item')) target.open = true;
+
+        tocLinks.forEach((link) => {
+          const linkId = link.getAttribute('href').slice(1);
+          link.classList.toggle('is-active', linkId === target.id || (target === section && linkId === section.id));
+        });
+
+        updatePageNavigation(section);
+        if (updateHistory) history.pushState(null, '', '#' + target.id);
+        requestAnimationFrame(() => target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' }));
+      }
+
+      function setEditMode(editing) {
+        document.body.classList.toggle('is-editing', editing);
+        editableTargets.forEach((target) => {
+          if (editing) {
+            target.setAttribute('contenteditable', 'true');
+            target.setAttribute('spellcheck', 'true');
+          } else {
+            target.removeAttribute('contenteditable');
+            target.removeAttribute('spellcheck');
+          }
+        });
+        if (editing) document.querySelectorAll('details.faq-item').forEach((detail) => { detail.open = true; });
+        editButton.textContent = editing ? 'Editing…' : 'Edit Content';
+        editButton.setAttribute('aria-pressed', String(editing));
+      }
+
+      function downloadEditedHtml() {
+        const clone = document.documentElement.cloneNode(true);
+        clone.querySelector('body').classList.remove('is-editing');
+        clone.querySelectorAll('[contenteditable], [spellcheck]').forEach((target) => {
+          target.removeAttribute('contenteditable');
+          target.removeAttribute('spellcheck');
+        });
+        const clonedEditButton = clone.querySelector('#editButton');
+        if (clonedEditButton) {
+          clonedEditButton.textContent = 'Edit Content';
+          clonedEditButton.setAttribute('aria-pressed', 'false');
+        }
+        const clonedShell = clone.querySelector('.manual-shell');
+        const clonedSidebarToggle = clone.querySelector('#sidebarToggle');
+        if (clonedShell) clonedShell.classList.remove('nav-collapsed');
+        if (clonedSidebarToggle) {
+          clonedSidebarToggle.textContent = 'Collapse Navigation';
+          clonedSidebarToggle.setAttribute('aria-expanded', 'true');
+          clonedSidebarToggle.setAttribute('aria-label', 'Collapse navigation panel');
+        }
+        clone.querySelectorAll('.is-hidden').forEach((item) => item.classList.remove('is-hidden'));
+        clone.querySelectorAll('.faq-group').forEach((group) => {
+          const details = [...group.querySelectorAll(':scope > details.faq-item')];
+          details.forEach((detail) => detail.removeAttribute('open'));
+          if (details[0]) details[0].setAttribute('open', '');
+        });
+        const html = '<!doctype html>\n' + clone.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'DurBeen_ClayBot_Mega_Operation_Manual_EDITED.html';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function setMenu(open) {
+        sidebar.classList.toggle('is-open', open);
+        overlay.classList.toggle('is-open', open);
+        menuButton.setAttribute('aria-expanded', String(open));
+      }
+
+      function setNavigationCollapsed(collapsed) {
+        manualShell.classList.toggle('nav-collapsed', collapsed);
+        sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+        sidebarToggle.textContent = collapsed ? 'Expand Navigation' : 'Collapse Navigation';
+        sidebarToggle.setAttribute('aria-label', collapsed ? 'Expand navigation panel' : 'Collapse navigation panel');
+      }
+
+      menuButton.addEventListener('click', () => setMenu(!sidebar.classList.contains('is-open')));
+      overlay.addEventListener('click', () => setMenu(false));
+      sidebarToggle.addEventListener('click', () => setNavigationCollapsed(!manualShell.classList.contains('nav-collapsed')));
+
+      navSearch.addEventListener('input', () => {
+        const query = navSearch.value.trim().toLowerCase();
+        document.querySelectorAll('.toc-group').forEach((group) => {
+          const sections = [...group.querySelectorAll('.toc-section')];
+          sections.forEach((section) => {
+            const matches = !query || section.textContent.toLowerCase().includes(query);
+            section.classList.toggle('is-hidden', !matches);
+          });
+          group.classList.toggle('is-hidden', sections.every((section) => section.classList.contains('is-hidden')));
+        });
+      });
+
+      tocLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          if (document.body.classList.contains('is-editing')) {
+            event.preventDefault();
+            return;
+          }
+          const id = link.getAttribute('href').slice(1);
+          event.preventDefault();
+          showTarget(id);
+          setMenu(false);
+        });
+      });
+
+      document.querySelectorAll('.topnav a[href^="#"], .wordmark[href^="#"]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          showTarget(link.getAttribute('href').slice(1));
+        });
+      });
+
+      [previousPage, nextPage].forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          if (!link.hidden) showTarget(link.getAttribute('href').slice(1));
+        });
+      });
+
+      document.querySelectorAll('.faq-group').forEach((group) => {
+        group.querySelectorAll('details').forEach((detail) => {
+          detail.addEventListener('toggle', () => {
+            if (document.body.classList.contains('is-editing')) return;
+            if (!detail.open) return;
+            group.querySelectorAll('details').forEach((peer) => {
+              if (peer !== detail) peer.open = false;
+            });
+          });
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!document.body.classList.contains('is-editing')) return;
+        const summary = event.target.closest('summary[contenteditable="true"]');
+        if (summary) event.preventDefault();
+      }, true);
+
+      editButton.addEventListener('click', () => setEditMode(!document.body.classList.contains('is-editing')));
+      finishEditButton.addEventListener('click', () => setEditMode(false));
+      downloadHtmlButton.addEventListener('click', downloadEditedHtml);
+      window.addEventListener('popstate', () => showTarget(location.hash.slice(1) || majorSections[0].id, false, false));
+      showTarget(location.hash.slice(1) || majorSections[0].id, false, false);
+    })();
+  </script>
+</body>
+</html>
