@@ -19,8 +19,8 @@ namespace CasaCreta.ReDev
     {
         public ccExtrude()
             : base(
-                "ccExtrude",
-                "ccExtrude",
+                "Extrude cc",
+                "Extrude cc",
                 "Extrudes points, curves, and surfaces along a vector using multi-threaded parallel execution.",
                 "CasaCreta",
                 "ReDev")
@@ -237,7 +237,25 @@ namespace CasaCreta.ReDev
             return translated;
         }
 
-        protected override Bitmap Icon => null;
+        private static readonly Bitmap _cachedIcon = LoadIcon();
+
+        private static Bitmap LoadIcon()
+        {
+            try
+            {
+                byte[] bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIaSURBVEhL7ZW9a1NhFMZ/+bg3aWPUUG0dRMSGKmKxOIhBRQRdSukoDi2I4AfWL1I6WC1RKg5FhTpYBBHpoJMOQnGwLvYPcMzg4CS4qYUYIiZPOem95MukVQoufeDhHs55z/ldeOE98J8VAMKA433rVV2zs6vXYTiZjvEzE0ZX21nshUNAOxBMwb7LbSxmQmgsSiEFZ4FYk59oUPgETE1EKH1Mo9+v0cIwGo9QPAgjR+D8DZfiwiAqTqHsELrtomPwBOgC2uoH1mg8jB7soPTlMdJbpDdIr1B2FN2NLzt7EWka6T7SPfT1Enq4ldLNEAI6gUj9XF9OBqQPSO9rAXqJNIv0FGmmFqA7SLeQ9QI7gU3e3TSoJWBuFM1dWxGwB+j4a0B+FiW7ULIT5R+1BPT+E2DyVLm57MnBNQZ8nkFRpwKw+NPEGgL6D1SG++7fu4YA/5L94Stc8jpgHQDKz6MLAygeRfEIuj6Acs8rgNw0Sh9HcRfFHDS8H/0YWyXgCqhvV2WY7+6OqjjRWO9JoJEKYEszgJHLDS7kHTgHDLnwrX6gC9+BMw6cjkKuqpZqBXDCUAjCPHDUexmT3l89C0AhAL+AFyxvuN1evS8I76wX6GkJAOLeZtoObAM2e++75eyt7/ZsseU2enU7az2Wsxl/BJh8iDnqLXOzbakNQMKzxZbz63bW72s63Jct71B90ha+VzNbXC/rqVn8S8XsO9ekdpbBAAAAAElFTkSuQmCC");
+                using (var ms = new System.IO.MemoryStream(bytes))
+                {
+                    return new Bitmap(ms);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        protected override Bitmap Icon => _cachedIcon;
 
         public override Guid ComponentGuid =>
             new Guid("A8B4C120-E35F-4D2A-9A10-7B4D581E9F10");

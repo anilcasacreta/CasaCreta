@@ -18,8 +18,8 @@ namespace CasaCreta.ReDev
     {
         public ccBoundarySurfaces()
             : base(
-                "ccBoundarySurfaces",
-                "ccBoundSrf",
+                "Boundary Surfaces cc",
+                "BoundSrf cc",
                 "Creates planar surfaces from boundary edge curves using multi-threaded parallel execution and spatial indexing.",
                 "CasaCreta",
                 "ReDev")
@@ -198,7 +198,25 @@ namespace CasaCreta.ReDev
             }
         }
 
-        protected override Bitmap Icon => null;
+        private static readonly Bitmap _cachedIcon = LoadIcon();
+
+        private static Bitmap LoadIcon()
+        {
+            try
+            {
+                byte[] bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIlSURBVEhLvZXPaxNBFMc/qbtb1FSF1t+0YFFpoaKChahViphq2ogFwYM3EerRg4Va6EERvIhgvWkQPQgePXloQdHe/RcEBcGDeEkkkWCfvJ1ZTCe726QtfuHLsju77/Nm5r0d+M/qADx73Vjl4eEYVM7BPJAFOoFNGwXr0OAiIhdAigE/CgEfR+FWP+wCgvWCPM1cgz+9inx7jXy4i9w+zs9xj/IozABdgO9+2Ko0u6wCZGmlP79ArvdRHvdZ7IG9wGb341bVGQdQ198hd4ZDyAKwc60QPwQsxLv+FrnRS+U0zAHda1kuA3iT7C9PkKJHpRsG7J60tfEG8Crd04OUczDLv+pqWQbwLN1LN5FCwCegL2YWqY1qAI/TPX8KGYPls1ACdgNb9dvz8Mhp1CaIATxI9+UA7cewIV2rFGKXrwliAHPpLp1EJgNzjZ7VZpBJn3oefp+B50AvsN0ulwOYbd/3B6hd9HkPHMNU2J7kGcQESPPiBMsTPt+7IAccwnS7Zp+wBzFBkvx1CrnkUT0AV4DDdtObMo/UFqA2jVzbRnU4wz1gENhnyzbjBo7UFqBh3YdsT+xIyjyU1rECSrnmYI3W8aKHFDJUsjAC9Lfyb1px4KziP7beq8ARYD+wxQ3oKjxwFDICL4ETwFEboNFDOp6HX/a9g0DPatmrwgPHdqA2ia6pZqb3Ov3Ieq/PdVzfi633JEUQreHo0NfMXOvzxvdSg/8F2lDlXrduCqEAAAAASUVORK5CYII=");
+                using (var ms = new System.IO.MemoryStream(bytes))
+                {
+                    return new Bitmap(ms);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        protected override Bitmap Icon => _cachedIcon;
 
         public override Guid ComponentGuid =>
             new Guid("7C3E1492-4B21-4E76-8812-70B92A478C33");

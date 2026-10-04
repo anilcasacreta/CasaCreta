@@ -1,6 +1,6 @@
 # CasaCreta Release v1.1.0
 
-**Build date:** 2026-10-03  
+**Build date:** 2026-10-04  
 **Target framework:** net7.0-windows (Rhino 8) / net48 (Rhino 7)  
 **Build configuration:** Release  
 
@@ -13,9 +13,9 @@
 | EtoForms | GeometryPickerComponent | EtoForms | CasaCreta.EtoForms |
 | MeshEdit | GGRepairMesh | Mesh Edit | CasaCreta.MeshEdit |
 | Surface | CreateUVCrv | Surface | CasaCreta.Surface |
-| ReDev | ccExtrude | ReDev | CasaCreta.ReDev |
-| ReDev | ccBoundarySurfaces | ReDev | CasaCreta.ReDev |
-| ReDev | ccFilletEdge | ReDev | CasaCreta.ReDev |
+| ReDev | Extrude cc | ReDev | CasaCreta.ReDev |
+| ReDev | Boundary Surfaces cc | ReDev | CasaCreta.ReDev |
+| ReDev | Fillet Edge cc | ReDev | CasaCreta.ReDev |
 
 ## Plugin Identity
 
@@ -26,7 +26,7 @@
 ## Checksums
 
 ```
-SHA-256: 130B3E2E0E14A9CDA17A2686083F2A0D562AA7F2B65E2A9C6028DA379992C387  CasaCreta.gha
+SHA-256: EC141BF88B3316E48B9918770D0198E9984775A34B0757D5D97140FD29A8CF25  CasaCreta.gha
 ```
 
 ## Deployment
