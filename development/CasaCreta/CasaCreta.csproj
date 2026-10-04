@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0</Version>
+    <Version>1.1.0</Version>
     <Title>CasaCreta</Title>
     <Company>CasaCreta Authors</Company>
     <Description>Curve ordering component for G-code generation</Description>

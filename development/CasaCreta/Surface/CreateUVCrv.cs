@@ -150,6 +150,7 @@ namespace CasaCreta
 
             List<Curve> trimLoops = GetTrimLoops(face);
             List<Curve> uvCurves = PullBackCurves(
+                face,
                 surface,
                 curves,
                 tolerance);
@@ -197,6 +198,7 @@ namespace CasaCreta
         }
 
         private List<Curve> PullBackCurves(
+            BrepFace face,
             Rhino.Geometry.Surface surface,
             IEnumerable<Curve> curves,
             double tolerance)
@@ -212,7 +214,7 @@ namespace CasaCreta
                     continue;
                 }
 
-                Curve uvCurve = surface.Pullback(curve, tolerance);
+                Curve uvCurve = PullSingleCurve(face, surface, curve, tolerance);
                 if (uvCurve == null || !uvCurve.IsValid)
                 {
                     failed++;
@@ -226,11 +228,110 @@ namespace CasaCreta
             {
                 AddRuntimeMessage(
                     GH_RuntimeMessageLevel.Warning,
-                    failed + " curve(s) could not be pulled back. Curves "
-                    + "must lie on the underlying surface within tolerance.");
+                    failed + " curve(s) could not be pulled back.");
             }
 
             return result;
+        }
+
+        private static Curve PullSingleCurve(
+            BrepFace face,
+            Rhino.Geometry.Surface surface,
+            Curve curve,
+            double tolerance)
+        {
+            // 1. Direct surface pullback
+            try
+            {
+                Curve uvCurve = surface.Pullback(curve, tolerance);
+                if (uvCurve != null && uvCurve.IsValid)
+                    return uvCurve;
+            }
+            catch { }
+
+            // 2. Direct face pullback
+            try
+            {
+                Curve uvCurve = face.Pullback(curve, tolerance);
+                if (uvCurve != null && uvCurve.IsValid)
+                    return uvCurve;
+            }
+            catch { }
+
+            // 3. Relaxed tolerance pullback
+            double relaxedTol = Math.Max(tolerance * 10.0, 0.05);
+            try
+            {
+                Curve uvCurve = surface.Pullback(curve, relaxedTol);
+                if (uvCurve != null && uvCurve.IsValid)
+                    return uvCurve;
+            }
+            catch { }
+
+            // 4. Project 3D curve to face first, then pullback
+            try
+            {
+                var pulled3d = curve.PullToBrepFace(face, tolerance);
+                if (pulled3d != null && pulled3d.Length > 0)
+                {
+                    var pieces = new List<Curve>();
+                    foreach (var p3d in pulled3d)
+                    {
+                        var pieceUv = face.Pullback(p3d, tolerance) ?? surface.Pullback(p3d, relaxedTol);
+                        if (pieceUv != null && pieceUv.IsValid)
+                            pieces.Add(pieceUv);
+                    }
+                    if (pieces.Count == 1) return pieces[0];
+                    if (pieces.Count > 1)
+                    {
+                        var joined = Curve.JoinCurves(pieces, tolerance);
+                        if (joined != null && joined.Length > 0) return joined[0];
+                        return pieces[0];
+                    }
+                }
+            }
+            catch { }
+
+            // 5. Numerical point-sampling fallback (guaranteed to generate UV curve)
+            try
+            {
+                int sampleCount = Math.Max(24, Math.Min(200, (int)(curve.GetLength() / Math.Max(tolerance, 0.05))));
+                double[] tParams = curve.DivideByCount(sampleCount, true);
+                if (tParams != null && tParams.Length >= 2)
+                {
+                    var uvPoints = new List<Point3d>(tParams.Length);
+                    for (int i = 0; i < tParams.Length; i++)
+                    {
+                        Point3d pt3d = curve.PointAt(tParams[i]);
+                        if (surface.ClosestPoint(pt3d, out double u, out double v))
+                        {
+                            uvPoints.Add(new Point3d(u, v, 0.0));
+                        }
+                    }
+
+                    if (uvPoints.Count >= 2)
+                    {
+                        if (curve.IsClosed && uvPoints.Count >= 3)
+                        {
+                            uvPoints.Add(uvPoints[0]);
+                        }
+
+                        if (curve.IsLinear())
+                        {
+                            return new PolylineCurve(uvPoints);
+                        }
+
+                        var interp = Curve.CreateInterpolatedCurve(uvPoints, 3);
+                        if (interp != null && interp.IsValid)
+                            return interp;
+
+                        return new PolylineCurve(uvPoints);
+                    }
+                }
+            }
+            catch { }
+
+            return null;
         }
 
         private List<Point3d> PullBackPoints(

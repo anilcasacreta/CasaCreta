@@ -1,7 +1,7 @@
-# CasaCreta Release v1.1.0
+# CasaCreta Release v1.0.0
 
 **Build date:** 2026-10-03  
-**Target framework:** net7.0-windows (Rhino 8) / net48 (Rhino 7)  
+**Target framework:** net7.0-windows (Rhino 8)  
 **Build configuration:** Release  
 
 ## Sections
@@ -13,9 +13,6 @@
 | EtoForms | GeometryPickerComponent | EtoForms | CasaCreta.EtoForms |
 | MeshEdit | GGRepairMesh | Mesh Edit | CasaCreta.MeshEdit |
 | Surface | CreateUVCrv | Surface | CasaCreta.Surface |
-| ReDev | ccExtrude | ReDev | CasaCreta.ReDev |
-| ReDev | ccBoundarySurfaces | ReDev | CasaCreta.ReDev |
-| ReDev | ccFilletEdge | ReDev | CasaCreta.ReDev |
 
 ## Plugin Identity
 
@@ -26,12 +23,12 @@
 ## Checksums
 
 ```
-SHA-256: 130B3E2E0E14A9CDA17A2686083F2A0D562AA7F2B65E2A9C6028DA379992C387  CasaCreta.gha
+SHA-256: D4F496D66B114E45A746D097DC1AF8A52560EC808789394E24FC1D02D12CCDB8  CasaCreta.gha
 ```
 
 ## Deployment
 
-Copied to Grasshopper Libraries folder:
+Copy `CasaCreta.gha` to your Grasshopper Libraries folder:
 ```
-%APPDATA%\Grasshopper\Libraries\CasaCreta.gha
+%APPDATA%\Grasshopper\Libraries\
 ```
