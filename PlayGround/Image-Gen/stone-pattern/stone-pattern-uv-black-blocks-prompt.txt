@@ -1,0 +1,7 @@
+Generated using the built-in image_gen tool.
+
+Use case: precise-object-edit.
+Edit the supplied 3:1 rectangular outline stone UV pattern into a solid black stone mask on a pure white background.
+Fill the interior of EVERY outlined stone completely solid BLACK. Retain all existing stone sizes, contours, positions, orientations, spacing, small infill pieces and wide rectangular composition as precisely as possible. The irregular channels and gaps BETWEEN stones remain pure WHITE. Stone boundaries connect directly to their black fills.
+The entire output consists solely of flat solid black irregular stone-shaped blocks separated by white gaps, matching a binary silhouette mask. NO dots, no empty white stone interiors, no outline-only stones, no shading, no gradients, no texture, no gray regions, no black background.
+Preserve approximately 3:1 width-to-height and natural cropping of stones at the image edges. Full image is the map, no surrounding border, no screen UI, no text, no watermark. Clean crisp edges. Do not redesign or rearrange the stones; change only their interiors from white to black.

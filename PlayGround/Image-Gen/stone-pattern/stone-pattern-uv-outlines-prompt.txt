@@ -1,0 +1,9 @@
+Generated using the built-in image_gen tool.
+
+Use case: precise-object-edit.
+Edit the supplied rectangular ceramic UV map into a clean outline-only stone pattern.
+Preserve the existing approximately 3:1 rectangular aspect ratio and the large-scale positions, sizes, shapes, orientation and arrangement of the irregular stone-shaped dot clusters as closely as possible.
+Replace EACH entire cluster of dots with ONE clean thin continuous BLACK closed outline defining the outer stone boundary. Follow the general envelope of each cluster, softly angular and weathered, without scalloping around individual dots. Small isolated infill clusters become small outlined infill stones.
+Remove ALL dots, circles within stones, interior markings, black fill, shading and texture. Both the inside of every stone and all gaps between stones must be pure WHITE. Only the narrow stone boundary strokes are BLACK. No filled black stones, no thick black channels.
+Output a flat 2D technical line drawing, crisp consistent approximately 2-3 pixel black lines at full resolution, entirely empty white stone interiors. Retain the same natural tight-fitting Mallorcan dry-stone composition, varied stone scales, organic gaps and understated angular imperfect stone geometry.
+Edge-to-edge rectangular UV texture; no pot, no perspective, no border, no margins, no labels or watermark. Preserve natural edge cropping and aim for left/right continuity for cylindrical wrapping. Deliver only ONE wide rectangular black-outline-on-white image.

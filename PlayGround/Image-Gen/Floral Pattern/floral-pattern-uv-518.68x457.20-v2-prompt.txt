@@ -1,0 +1,8 @@
+Generated with the built-in image_gen tool.
+Physical mapping area: width 518.68 mm, height 457.20 mm.
+
+Use case: precise-object-edit / floral pattern adaptation.
+Input image: the supplied approved black floral mask is the ONLY design source. Preserve its visual language: flowing branching stems, pointed elongated leaves, five-petal flowers, hanging buds, black solid silhouettes on white.
+Create a new flat rectangular UV image designed specifically for a physical rectangle WIDTH 518.68 mm and HEIGHT 457.20 mm (width/height = 1.13447; moderately landscape, close to square). Use this exact overall aspect ratio; target around 1600 x 1410 pixels or another high-resolution equivalent with the same ratio.
+Recompose the floral design naturally to fill this taller canvas. Use several interwoven but airy climbing branches rising diagonally through the rectangle, with the approved leaf silhouettes, occasional five-petal flowers and buds distributed across the full height. Similar scale and motif density to the source, but adapted to the new proportion. Do NOT simply squeeze the old very-wide strip or crop it to a small portion. Maintain readable white negative spaces between leaves and branches. Clearly connected smooth black stems thick enough for image sampling.
+All leaves, petals, buds and stems must be pure solid BLACK with clean continuous contours; background pure WHITE. No individual raised dots or circles, no ceramic texture, no gradients, no grayscale, no shading, no pot, no product mockup, no border, no dimensions/text, no screenshot UI. The entire image is the map. Keep edges usable as a wrap and avoid a conspicuous vertical boundary.

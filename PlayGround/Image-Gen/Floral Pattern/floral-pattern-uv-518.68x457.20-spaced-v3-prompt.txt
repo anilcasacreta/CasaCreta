@@ -1,0 +1,6 @@
+Generated with the built-in image_gen tool.
+Physical mapping area: width 518.68 mm, height 457.20 mm.
+
+Edit the supplied black-and-white floral UV mask. Keep its 518.68 mm wide by 457.20 mm high physical mapping ratio (about 1.1345 width/height), black solid silhouettes on pure white, and the same botanical visual language.
+Make the design moderately simpler and more spacious: remove roughly 20-25% of the small secondary twigs, leaves, buds, and one or two minor flower motifs, then redistribute the remaining branch paths to leave larger open white areas. Enlarge the remaining individual leaves and the overall branch sweeps by approximately 18-20%, including slightly thicker main stems so they read clearly. Recompose gracefully so leaves do not overlap or crowd. Keep a few five-petal flowers and hanging buds as accents. Maintain varied diagonal flow and natural curvature. Aim for an intentionally airy medium-density design, not sparse and not a full black thicket.
+Change only density and motif scale. Do not squeeze or simply zoom/crop the previous design. Do not add new motif types, outlines, dots, ceramic texture, gray, gradients, shadows, labels, dimensions or border. The entire rectangular image is the finished flat black-on-white mask.

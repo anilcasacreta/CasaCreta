@@ -28,6 +28,8 @@ pydeps/
 
 # ===== Temporary / Generated =====
 tmp/
+tmp_*.png
+development/repos/
 chrome-profile*/
 edge-profile*/
 marlin_pages*/

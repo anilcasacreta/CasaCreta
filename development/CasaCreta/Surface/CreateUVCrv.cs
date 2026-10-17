@@ -1,392 +1,193 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
+using Grasshopper;
 using Grasshopper.Kernel;
-
+using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
 using Rhino;
 using Rhino.Geometry;
-using Surface = Rhino.Geometry.Surface;
 
 namespace CasaCreta
 {
-    /// <summary>
-    /// Exposes the RhinoCommon parameter-space operations behind Rhino's
-    /// CreateUVCrv workflow without running an interactive Rhino command.
-    /// </summary>
     public sealed class CreateUVCrv : GH_Component
     {
+        private static readonly Bitmap _cachedIcon = LoadIcon();
+
         public CreateUVCrv()
             : base(
                 "Create UV Curves",
                 "CreateUVCrv",
-                "Creates the true UV-domain boundary, trim loops, curve "
-                + "pullbacks, and point parameters for one surface face "
-                + "using RhinoCommon.",
+                "Creates UV curves of a surface by measuring true max iso lengths "
+                + "and mapping trim boundaries onto a flat rectangle.",
                 "CasaCreta",
                 "Surface")
         {
         }
 
-        protected override void RegisterInputParams(
-            GH_InputParamManager parameters)
+        public override GH_Exposure Exposure => GH_Exposure.primary;
+
+        protected override void RegisterInputParams(GH_InputParamManager pManager)
         {
-            parameters.AddSurfaceParameter(
-                "Surface",
-                "S",
-                "A single trimmed or untrimmed surface face.",
+            pManager.AddBrepParameter(
+                "Surface", "S",
+                "A surface or single-face Brep (trimmed, untrimmed, open, or closed).",
                 GH_ParamAccess.item);
 
-            parameters.AddCurveParameter(
-                "Curves",
-                "C",
-                "Optional 3D curves lying on the surface to pull back "
-                + "into its UV parameter space.",
-                GH_ParamAccess.list);
-
-            parameters.AddPointParameter(
-                "Points",
-                "P",
-                "Optional 3D points on the surface to convert to UV points.",
-                GH_ParamAccess.list);
-
-            parameters.AddNumberParameter(
-                "Tolerance",
-                "T",
-                "Pullback and point-on-surface tolerance. Values less than "
-                + "or equal to zero use the active Rhino document tolerance.",
+            pManager.AddPlaneParameter(
+                "Plane", "P",
+                "Base plane for the output rectangle. The corner starts at the plane origin and extends along its X+ and Y+ axes. Default is WorldXY at origin.",
                 GH_ParamAccess.item,
-                -1.0);
-
-            parameters[1].Optional = true;
-            parameters[2].Optional = true;
-            parameters[3].Optional = true;
+                Plane.WorldXY);
+            pManager[1].Optional = true;
         }
 
-        protected override void RegisterOutputParams(
-            GH_OutputParamManager parameters)
+        protected override void RegisterOutputParams(GH_OutputParamManager pManager)
         {
-            parameters.AddCurveParameter(
-                "UV Domain",
-                "D",
-                "Untrimmed surface-domain rectangle on World XY.",
-                GH_ParamAccess.item);
-
-            parameters.AddCurveParameter(
-                "Trim Loops",
-                "T",
-                "All Brep trim loops in UV parameter space. On an "
-                + "untrimmed surface, the outer loop may coincide with "
-                + "the UV domain boundary.",
+            pManager.AddCurveParameter(
+                "UV Curves", "C",
+                "Flattened trim boundary curves of the surface mapped onto the target rectangle.",
                 GH_ParamAccess.list);
 
-            parameters.AddCurveParameter(
-                "UV Curves",
-                "C",
-                "Input 3D curves pulled back to UV parameter space.",
-                GH_ParamAccess.list);
-
-            parameters.AddPointParameter(
-                "UV Points",
-                "P",
-                "Input 3D points represented as (u, v, 0).",
-                GH_ParamAccess.list);
-
-            parameters.AddIntervalParameter(
-                "U Domain",
-                "U",
-                "Original U parameter domain of the underlying surface.",
-                GH_ParamAccess.item);
-
-            parameters.AddIntervalParameter(
-                "V Domain",
-                "V",
-                "Original V parameter domain of the underlying surface.",
+            pManager.AddRectangleParameter(
+                "Rectangle", "R",
+                "Boundary rectangle (maxU × maxV) starting at the Plane origin, extending X+ and Y+.",
                 GH_ParamAccess.item);
         }
 
-        protected override void SolveInstance(IGH_DataAccess access)
+        protected override void SolveInstance(IGH_DataAccess DA)
         {
-            Brep brep = null;
-            var curves = new List<Curve>();
-            var points = new List<Point3d>();
-            double tolerance = -1.0;
-
-            if (!access.GetData(0, ref brep) || brep == null)
-                return;
-
-            access.GetDataList(1, curves);
-            access.GetDataList(2, points);
-            access.GetData(3, ref tolerance);
-
-            if (brep.Faces.Count != 1)
+            Brep source = null;
+            if (!DA.GetData(0, ref source) || source == null || source.Faces.Count == 0)
             {
-                AddRuntimeMessage(
-                    GH_RuntimeMessageLevel.Error,
-                    "CreateUVCrv requires one surface face. Explode or "
-                    + "deconstruct polysurfaces and process each face "
-                    + "separately because every face has its own UV space.");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid surface.");
                 return;
             }
 
-            tolerance = ResolveTolerance(tolerance);
-
-            BrepFace face = brep.Faces[0];
-            Surface surface = face.UnderlyingSurface();
-
-            if (surface == null)
+            if (source.Faces.Count > 1)
             {
-                AddRuntimeMessage(
-                    GH_RuntimeMessageLevel.Error,
-                    "The underlying Rhino surface is unavailable.");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Input Brep has multiple faces; only the first face is processed.");
+            }
+
+            Plane basePlane = Plane.WorldXY;
+            DA.GetData(1, ref basePlane);
+            if (!basePlane.IsValid)
+                basePlane = Plane.WorldXY;
+
+            BrepFace bf = source.Faces[0];
+
+            // --- Measure true max U and V lengths via isocurve sampling ---
+            BoundingBox bbox = bf.GetBoundingBox(true);
+            double bboxX = bbox.Max.X - bbox.Min.X;
+            double bboxY = bbox.Max.Y - bbox.Min.Y;
+            double bboxZ = bbox.Max.Z - bbox.Min.Z;
+            double maxDim = Math.Max(bboxX, Math.Max(bboxY, bboxZ));
+
+            // Dense isocurve sampling (~1mm spacing, clamped to reasonable range)
+            int isoCount = Math.Max(50, Math.Min((int)Math.Ceiling(maxDim), 2000));
+
+            Interval uDom = bf.Domain(0);
+            Interval vDom = bf.Domain(1);
+
+            // Measure U-direction iso curves (each runs along U at a fixed V)
+            double maxU = 0.0;
+            for (int i = 0; i <= isoCount; i++)
+            {
+                double v = vDom.Min + (vDom.Max - vDom.Min) * (i / (double)isoCount);
+                Curve iso = bf.IsoCurve(0, v);
+                if (iso != null)
+                {
+                    double len = iso.GetLength();
+                    if (len > maxU) maxU = len;
+                }
+            }
+
+            // Measure V-direction iso curves (each runs along V at a fixed U)
+            double maxV = 0.0;
+            for (int i = 0; i <= isoCount; i++)
+            {
+                double u = uDom.Min + (uDom.Max - uDom.Min) * (i / (double)isoCount);
+                Curve iso = bf.IsoCurve(1, u);
+                if (iso != null)
+                {
+                    double len = iso.GetLength();
+                    if (len > maxV) maxV = len;
+                }
+            }
+
+            if (maxU <= 0.0 || maxV <= 0.0)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Could not measure surface.");
                 return;
             }
 
-            Interval uDomain = surface.Domain(0);
-            Interval vDomain = surface.Domain(1);
-            Curve domainBoundary = CreateDomainBoundary(
-                uDomain,
-                vDomain);
+            // --- Build boundary rectangle at basePlane origin, extending X+ and Y+ ---
+            Rectangle3d rect = new Rectangle3d(
+                basePlane,
+                new Interval(0, maxU),
+                new Interval(0, maxV));
 
-            List<Curve> trimLoops = GetTrimLoops(face);
-            List<Curve> uvCurves = PullBackCurves(
-                face,
-                surface,
-                curves,
-                tolerance);
-            List<Point3d> uvPoints = PullBackPoints(
-                surface,
-                points,
-                tolerance);
+            double tol = RhinoDoc.ActiveDoc?.ModelAbsoluteTolerance ?? 0.001;
+            if (tol <= 0.0) tol = 0.001;
 
-            access.SetData(0, domainBoundary);
-            access.SetDataList(1, trimLoops);
-            access.SetDataList(2, uvCurves);
-            access.SetDataList(3, uvPoints);
-            access.SetData(4, uDomain);
-            access.SetData(5, vDomain);
-        }
+            // --- Build target planar surface matching rectangle and source UV domains ---
+            Point3d p0 = basePlane.PointAt(0, 0);
+            Point3d p1 = basePlane.PointAt(maxU, 0);
+            Point3d p2 = basePlane.PointAt(maxU, maxV);
+            Point3d p3 = basePlane.PointAt(0, maxV);
 
-        private static Curve CreateDomainBoundary(
-            Interval uDomain,
-            Interval vDomain)
-        {
-            var boundary = new Polyline(5)
+            NurbsSurface targetSrf = NurbsSurface.CreateFromCorners(p0, p1, p2, p3);
+            if (targetSrf == null)
             {
-                new Point3d(uDomain.Min, vDomain.Min, 0.0),
-                new Point3d(uDomain.Max, vDomain.Min, 0.0),
-                new Point3d(uDomain.Max, vDomain.Max, 0.0),
-                new Point3d(uDomain.Min, vDomain.Max, 0.0),
-                new Point3d(uDomain.Min, vDomain.Min, 0.0)
-            };
-
-            return new PolylineCurve(boundary);
-        }
-
-        private static List<Curve> GetTrimLoops(BrepFace face)
-        {
-            var result = new List<Curve>();
-
-            foreach (BrepLoop loop in face.Loops)
-            {
-                Curve curve = loop.To2dCurve();
-                if (curve != null && curve.IsValid)
-                    result.Add(curve);
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Failed to create target surface.");
+                return;
             }
 
-            return result;
-        }
+            // Align target surface domains to match source face domains exactly
+            targetSrf.SetDomain(0, uDom);
+            targetSrf.SetDomain(1, vDom);
 
-        private List<Curve> PullBackCurves(
-            BrepFace face,
-            Rhino.Geometry.Surface surface,
-            IEnumerable<Curve> curves,
-            double tolerance)
-        {
-            var result = new List<Curve>();
-            int failed = 0;
-
-            foreach (Curve curve in curves)
+            // --- CopyTrimCurves onto target surface ---
+            Brep uvBrep = Brep.CopyTrimCurves(bf, targetSrf, tol);
+            if (uvBrep == null)
             {
-                if (curve == null || !curve.IsValid)
-                {
-                    failed++;
-                    continue;
-                }
-
-                Curve uvCurve = PullSingleCurve(face, surface, curve, tolerance);
-                if (uvCurve == null || !uvCurve.IsValid)
-                {
-                    failed++;
-                    continue;
-                }
-
-                result.Add(uvCurve);
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "CopyTrimCurves failed.");
+                DA.SetData(1, rect);
+                return;
             }
 
-            if (failed > 0)
+            // Join trim curves if possible, fallback to unjoined segments
+            if (uvBrep.Curves3D != null && uvBrep.Curves3D.Count > 0)
             {
-                AddRuntimeMessage(
-                    GH_RuntimeMessageLevel.Warning,
-                    failed + " curve(s) could not be pulled back.");
+                Curve[] joined = Curve.JoinCurves(uvBrep.Curves3D, tol);
+                if (joined != null && joined.Length > 0)
+                    DA.SetDataList(0, joined);
+                else
+                    DA.SetDataList(0, uvBrep.Curves3D);
             }
 
-            return result;
+            DA.SetData(1, rect);
         }
 
-        private static Curve PullSingleCurve(
-            BrepFace face,
-            Rhino.Geometry.Surface surface,
-            Curve curve,
-            double tolerance)
+        private static Bitmap LoadIcon()
         {
-            // 1. Direct surface pullback
             try
             {
-                Curve uvCurve = surface.Pullback(curve, tolerance);
-                if (uvCurve != null && uvCurve.IsValid)
-                    return uvCurve;
-            }
-            catch { }
-
-            // 2. Direct face pullback
-            try
-            {
-                Curve uvCurve = face.Pullback(curve, tolerance);
-                if (uvCurve != null && uvCurve.IsValid)
-                    return uvCurve;
-            }
-            catch { }
-
-            // 3. Relaxed tolerance pullback
-            double relaxedTol = Math.Max(tolerance * 10.0, 0.05);
-            try
-            {
-                Curve uvCurve = surface.Pullback(curve, relaxedTol);
-                if (uvCurve != null && uvCurve.IsValid)
-                    return uvCurve;
-            }
-            catch { }
-
-            // 4. Project 3D curve to face first, then pullback
-            try
-            {
-                var pulled3d = curve.PullToBrepFace(face, tolerance);
-                if (pulled3d != null && pulled3d.Length > 0)
+                byte[] bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACKElEQVR4nLWVO2gUURSGvxtnFhmNs4kEZCxEC0VQkBQ2giQWNlvEWnEh+CiMoKKFFjZiEcFKCIIpAinSGFwstlFI1ELBEIgQa0FJMN2u6KCZZa7ceezezL5md5MDw1zu4//v+c+55wgpJTtpfTuKDhjJiUqlQq9eCSEwDKOeYP5oVm6Wyj2BZ+x9nF/+gWVZQpEY+s0V+MV5QDnga3+/ybjB3NzNX5TLwSWlIqnGoCpLSvDiEjjj4FyB4rK2Briui+d5AWZdDJoBLq7AzFv48BU2SuD78M8LEQ8OCtaeR/shAI+tniAB/vsP5J9C4VNC6+TJ+IyuRkMCDbziwdgjWPgC2T1wdwwunIYjQ7C4Cs6gCPZNX9sqkW4tJZp5E4IfGICPk3B4qLaeOwXrsSy6rG0fWhzEzzChAID8SAQu2ySBTEMQbbz+DDY9Geg5+64FoOzSg4bE/jZ68OIGZEwRPPv82ZTgnXiQG4apq+HU7Hv4tpHyRafyIDo0PgLnTsDPEgzfh8cFWP0O7l8oroBzC5w74birNDX64PU9yE9BYQkevgy/+KFVX/KAYG2y0yBH/70ZeHUbFh7A5TNwaD/sNhO3bRHk1rVI1sajx2H0WG0+kCgrgiPTl5oHuXktapP3uZOw/qRxmqrMa0hg2jZzE701nF39/Zim0jAiiyufajiu60rVLPR6Tgembq7ALcvCtu2gq1UJdBK9nndjEUnQMrcQxCTb2fT/A9uNTDFxjqRiAAAAAElFTkSuQmCC");
+                using (var ms = new MemoryStream(bytes))
                 {
-                    var pieces = new List<Curve>();
-                    foreach (var p3d in pulled3d)
-                    {
-                        var pieceUv = face.Pullback(p3d, tolerance) ?? surface.Pullback(p3d, relaxedTol);
-                        if (pieceUv != null && pieceUv.IsValid)
-                            pieces.Add(pieceUv);
-                    }
-                    if (pieces.Count == 1) return pieces[0];
-                    if (pieces.Count > 1)
-                    {
-                        var joined = Curve.JoinCurves(pieces, tolerance);
-                        if (joined != null && joined.Length > 0) return joined[0];
-                        return pieces[0];
-                    }
+                    return new Bitmap(ms);
                 }
             }
-            catch { }
-
-            // 5. Numerical point-sampling fallback (guaranteed to generate UV curve)
-            try
+            catch
             {
-                int sampleCount = Math.Max(24, Math.Min(200, (int)(curve.GetLength() / Math.Max(tolerance, 0.05))));
-                double[] tParams = curve.DivideByCount(sampleCount, true);
-                if (tParams != null && tParams.Length >= 2)
-                {
-                    var uvPoints = new List<Point3d>(tParams.Length);
-                    for (int i = 0; i < tParams.Length; i++)
-                    {
-                        Point3d pt3d = curve.PointAt(tParams[i]);
-                        if (surface.ClosestPoint(pt3d, out double u, out double v))
-                        {
-                            uvPoints.Add(new Point3d(u, v, 0.0));
-                        }
-                    }
-
-                    if (uvPoints.Count >= 2)
-                    {
-                        if (curve.IsClosed && uvPoints.Count >= 3)
-                        {
-                            uvPoints.Add(uvPoints[0]);
-                        }
-
-                        if (curve.IsLinear())
-                        {
-                            return new PolylineCurve(uvPoints);
-                        }
-
-                        var interp = Curve.CreateInterpolatedCurve(uvPoints, 3);
-                        if (interp != null && interp.IsValid)
-                            return interp;
-
-                        return new PolylineCurve(uvPoints);
-                    }
-                }
+                return null;
             }
-            catch { }
-
-            return null;
         }
 
-        private List<Point3d> PullBackPoints(
-            Rhino.Geometry.Surface surface,
-            IEnumerable<Point3d> points,
-            double tolerance)
-        {
-            var result = new List<Point3d>();
-            int failed = 0;
-
-            foreach (Point3d point in points)
-            {
-                if (!surface.ClosestPoint(
-                    point,
-                    out double u,
-                    out double v))
-                {
-                    failed++;
-                    continue;
-                }
-
-                Point3d surfacePoint = surface.PointAt(u, v);
-                if (!surfacePoint.IsValid
-                    || surfacePoint.DistanceTo(point) > tolerance)
-                {
-                    failed++;
-                    continue;
-                }
-
-                result.Add(new Point3d(u, v, 0.0));
-            }
-
-            if (failed > 0)
-            {
-                AddRuntimeMessage(
-                    GH_RuntimeMessageLevel.Warning,
-                    failed + " point(s) were farther from the surface "
-                    + "than the specified tolerance.");
-            }
-
-            return result;
-        }
-
-        private static double ResolveTolerance(double tolerance)
-        {
-            if (tolerance > 0.0)
-                return tolerance;
-
-            RhinoDoc document = RhinoDoc.ActiveDoc;
-            return document?.ModelAbsoluteTolerance > 0.0
-                ? document.ModelAbsoluteTolerance
-                : 0.001;
-        }
-
-        protected override Bitmap Icon => null;
+        protected override Bitmap Icon => _cachedIcon;
 
         public override Guid ComponentGuid =>
             new Guid("D5A2E1F7-04BD-4AB9-8D54-6CE5FA9110C2");
