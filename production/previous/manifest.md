@@ -1,10 +1,14 @@
-# CasaCreta Release v1.1.0
+# CasaCreta Release v1.2.0
 
-**Build date:** 2026-10-04  
+**Build date:** 2026-10-16  
 **Target framework:** net7.0-windows (Rhino 8) / net48 (Rhino 7)  
 **Build configuration:** Release  
 
-## Sections
+## Key Changes in v1.2.0
+- **Surface / CreateUVCrv:** Implemented true physical maximum U and V length detection using auto-selected dense isocurve sampling (1 mm physical spacing based on surface bounding box max dimension). Generates 2D planar unrolled trim curves and centered boundary rectangle.
+- **MeshEdit / MeshRepairComponent:** Added zero-dependency OpenVDB/Dendro volumetric union and healing engine.
+
+## Sections & Components
 
 | Section | Component | GH Panel | Namespace |
 |---|---|---|---|
@@ -12,6 +16,7 @@
 | GHSync | GHSyncStatusComponent | Utility | CasaCreta.GHSync.Components |
 | EtoForms | GeometryPickerComponent | EtoForms | CasaCreta.EtoForms |
 | MeshEdit | GGRepairMesh | Mesh Edit | CasaCreta.MeshEdit |
+| MeshEdit | MeshRepairComponent | Mesh_Repair | CasaCreta.MeshEdit |
 | Surface | CreateUVCrv | Surface | CasaCreta.Surface |
 | ReDev | Extrude cc | ReDev | CasaCreta.ReDev |
 | ReDev | Boundary Surfaces cc | ReDev | CasaCreta.ReDev |
@@ -26,7 +31,7 @@
 ## Checksums
 
 ```
-SHA-256: EC141BF88B3316E48B9918770D0198E9984775A34B0757D5D97140FD29A8CF25  CasaCreta.gha
+SHA-256: 2D0834FBFB57D8EF30A768F8A9B28F9578758615DCC5A0B1AD1FB647590B0C81  CasaCreta.gha
 ```
 
 ## Deployment
